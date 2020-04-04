@@ -1,0 +1,9 @@
+DROP TABLE stars_in_movies;
+DROP TABLE genres_in_movies;
+DROP TABLE sales;
+DROP TABLE ratings;
+DROP TABLE movies;
+DROP TABLE stars;
+DROP TABLE genres;
+DROP TABLE customers;
+DROP TABLE creditcards;
