@@ -31,9 +31,9 @@ CREATE TABLE genres_in_movies(
 );
 
 CREATE TABLE creditcards(
-    id VARCHAR(20) NOT NULL PRIMARY KEY,
-    firstName VARCHAR(50) NOT NULL,
-    lastName VARCHAR(50) NOT NULL,
+    id VARCHAR(20) DEFAULT '' NOT NULL PRIMARY KEY,
+    firstName VARCHAR(50) DEFAULT '' NOT NULL,
+    lastName VARCHAR(50) DEFAULT '' NOT NULL,
     expiration DATE NOT NULL
 );
 
