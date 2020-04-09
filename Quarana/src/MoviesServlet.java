@@ -36,7 +36,12 @@ public class MoviesServlet extends HttpServlet {
       // Declare our statement
       Statement statement = connection.createStatement();
 
-      String query = "SELECT  * FROM movies limit 20";
+      String query = "SELECT m.*, s.name as star, g.name as genre " +
+              "FROM top20_movies m " +
+              "INNER JOIN stars_in_movies sm ON sm.movieId = m.id " +
+              "INNER JOIN genres_in_movies gm ON gm.movieId = m.id " +
+              "INNER JOIN stars s ON s.id = sm.starId " +
+              "INNER JOIN genres g ON  g.id = gm.genreId";
 
       // Perform the query
       ResultSet resultSet = statement.executeQuery(query);
@@ -49,7 +54,9 @@ public class MoviesServlet extends HttpServlet {
         String movie_title = resultSet.getString("title");
         String movie_year = resultSet.getString("year");
         String movie_director = resultSet.getString("director");
-        //TODO: add first 3 genres, first 3 stars, rating
+        String movie_rating = resultSet.getString("rating");
+        String movie_genre = resultSet.getString("genre");
+        String movie_star = resultSet.getString("star");
 
         // Create a JsonObject based on the data we retrieve from resultSet
         JsonObject jsonObject = new JsonObject();
@@ -57,6 +64,9 @@ public class MoviesServlet extends HttpServlet {
         jsonObject.addProperty("movie_title", movie_title);
         jsonObject.addProperty("movie_year", movie_year);
         jsonObject.addProperty("movie_director", movie_director);
+        jsonObject.addProperty("movie_genre", movie_genre);
+        jsonObject.addProperty("movie_star", movie_star);
+        jsonObject.addProperty("movie_rating", movie_rating);
 
         jsonArray.add(jsonObject);
       }
@@ -76,7 +86,7 @@ public class MoviesServlet extends HttpServlet {
       jsonObject.addProperty("errorMessage", e.getMessage());
       out.write(jsonObject.toString());
 
-      // set reponse status to 500 (Internal Server Error)
+      // set response status to 500 (Internal Server Error)
       response.setStatus(500);
 
     }

@@ -1,4 +1,5 @@
 Quarana/.idea
 Quarana/.DS_Store
+Quarana/target/*
+Quarana/lib/*
 Quarana/*.iml
-

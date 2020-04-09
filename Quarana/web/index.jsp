@@ -16,6 +16,9 @@
         <th>Title</th>
         <th>Year</th>
         <th>Director</th>
+        <th>Genre's</th>
+        <th>Star's</th>
+        <th>Rating</th>
       </tr>
       </thead>
       <tbody id="movies_body"></tbody>
