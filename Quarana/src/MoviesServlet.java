@@ -23,7 +23,7 @@ public class MoviesServlet extends HttpServlet {
   @Resource(name = "jdbc/moviedb")
   private DataSource dataSource;
 
-  protected void query(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     response.setContentType("application/json"); // Response mime type
 
     // Output stream to STDOUT
@@ -36,7 +36,7 @@ public class MoviesServlet extends HttpServlet {
       // Declare our statement
       Statement statement = connection.createStatement();
 
-      String query = "SELECT  title, year, director FROM movies";
+      String query = "SELECT  * FROM movies limit 20";
 
       // Perform the query
       ResultSet resultSet = statement.executeQuery(query);
@@ -45,6 +45,7 @@ public class MoviesServlet extends HttpServlet {
 
       // Iterate through each row of resultSet
       while (resultSet.next()) {
+        String movie_id = resultSet.getString("id");
         String movie_title = resultSet.getString("title");
         String movie_year = resultSet.getString("year");
         String movie_director = resultSet.getString("director");
@@ -52,6 +53,7 @@ public class MoviesServlet extends HttpServlet {
 
         // Create a JsonObject based on the data we retrieve from resultSet
         JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("movie_id", movie_id);
         jsonObject.addProperty("movie_title", movie_title);
         jsonObject.addProperty("movie_year", movie_year);
         jsonObject.addProperty("movie_director", movie_director);
