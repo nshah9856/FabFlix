@@ -15,9 +15,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 //Declare WebServlet
-@WebServlet(name = "SingleMovieServlet", urlPatterns = "/movie")
-public class SingleMovieServlet extends HttpServlet {
-  private static final long serialVersionUID = 2L;
+@WebServlet(name = "SingleStarServlet", urlPatterns = "/star")
+public class SingleStarServlet extends HttpServlet {
+  private static final long serialVersionUID = 3L;
 
   // Create a dataSource which registered in web.xml
   @Resource(name = "jdbc/moviedb")
@@ -37,13 +37,12 @@ public class SingleMovieServlet extends HttpServlet {
       // Get a connection from dataSource
       Connection connection = dataSource.getConnection();
 
-      String query = "SELECT m.*, s.name, g.name, r.rating FROM movies m " +
+      String query = "SELECT m.*, s.name, g.name FROM movies m " +
           "INNER JOIN stars_in_movies sm ON sm.movieId = m.id " +
           "INNER JOIN genres_in_movies gm ON gm.movieId = m.id " +
           "INNER JOIN stars s ON s.id = sm.starId " +
           "INNER JOIN genres g ON  g.id = gm.genreId " +
-          "INNER JOIN ratings r ON r.movieId = m.id"+
-          "WHERE m.id = ?";
+          "WHERE s.id = ?";
 
       // Declare our statement
       PreparedStatement statement = connection.prepareStatement(query);
@@ -59,22 +58,17 @@ public class SingleMovieServlet extends HttpServlet {
 
       // Iterate through each row of resultSet
       while (resultSet.next()) {
-        String movie_title = resultSet.getString("title");
-        String movie_year = resultSet.getString("year");
-        String movie_director = resultSet.getString("director");
-        String movie_genres = resultSet.getString("genres");
-        String movie_stars = resultSet.getString("stars");
-        String movie_ratings = resultSet.getString("ratings");
+        String star_id = resultSet.getString("id");
+        String star_name = resultSet.getString("name");
+        String star_year = resultSet.getString("birthYear");
+        String movie_id = resultSet.getString("id");
 
-        // Create a JsonObject based on the data we retrieve from resultSet
+        // Create a JsonObject based on the data we retrieve from rs
         JsonObject jsonObject = new JsonObject();
-
-        jsonObject.addProperty("movie_title", movie_title);
-        jsonObject.addProperty("movie_year", movie_year);
-        jsonObject.addProperty("movie_director", movie_director);
-        jsonObject.addProperty("movie_genres", movie_genres);
-        jsonObject.addProperty("movie_stars", movie_stars);
-        jsonObject.addProperty("movie_ratings", movie_ratings);
+        jsonObject.addProperty("star_id", star_id);
+        jsonObject.addProperty("star_name", star_name);
+        jsonObject.addProperty("star_dob", star_year);
+        jsonObject.addProperty("movie_id", movie_id);
 
         jsonArray.add(jsonObject);
       }
