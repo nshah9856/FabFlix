@@ -29,7 +29,6 @@ const fetchMovieDetail = async () => {
 }
 
 const handleMoviesResult = data => {
-    console.log(data)
     const movie_data = {}
     data.forEach(
         ({movie_id, movie_director, movie_year, movie_title, movie_genres, movie_stars, movie_star_id, movie_ratings}) => {
