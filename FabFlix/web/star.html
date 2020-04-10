@@ -25,10 +25,15 @@
         body{
             padding-bottom: 50px;
         }
+
+        #floating-button{
+            opacity: 0;
+        }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-light" style="justify-content: center; background-color: #C8D0E9">
+<nav id='header' class="navbar navbar-light" style="justify-content: center;
+background-color: #C8D0E9">
     <a class="navbar-brand" href="/FabFlix">
         <img src="https://img.icons8.com/dusk/64/000000/movie-projector.png" width="30" height="30" class="d-inline-block align-top" alt="">
         <img src="./images/FabFlix_logo.png" height="30" class="d-inline-block align-top" alt="">
@@ -45,8 +50,9 @@
     <tbody id="star_body"></tbody>
 </table>
 
+
 <div id="floating-wrapper">
-    <a class="btn-circle btn-sm" href="/FabFlix">
+    <a id="floating-button" class="btn-circle btn-sm" href="/FabFlix">
         <img src="https://img.icons8.com/dusk/64/000000/movie-projector.png" width="30" height="30" class="d-inline-block align-top" alt="">
     </a>
 </div>
