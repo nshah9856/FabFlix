@@ -62,7 +62,7 @@ const handleMoviesResult = data => {
                     </th>
                     <th>
                     ${
-                movie_star.slice(0,3).map(({name,id}) => `<a href=star?id=${id}>${name}</a>`).join(', ')
+                movie_star.slice(0,3).map(({name,id}) => `<a href=star.html?id=${id}>${name}</a>`).join(', ')
             }
                     </th>
                     <th>${movie_ratings}</th>

@@ -15,7 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 //Declare WebServlet
-@WebServlet(name = "SingleStarServlet", urlPatterns = "/star")
+@WebServlet(name = "SingleStarServlet", urlPatterns = "/api/star")
 public class SingleStarServlet extends HttpServlet {
   private static final long serialVersionUID = 3L;
 
@@ -37,12 +37,9 @@ public class SingleStarServlet extends HttpServlet {
       // Get a connection from dataSource
       Connection connection = dataSource.getConnection();
 
-      String query = "SELECT m.*, s.name, g.name FROM movies m " +
-          "INNER JOIN stars_in_movies sm ON sm.movieId = m.id " +
-          "INNER JOIN genres_in_movies gm ON gm.movieId = m.id " +
-          "INNER JOIN stars s ON s.id = sm.starId " +
-          "INNER JOIN genres g ON  g.id = gm.genreId " +
-          "WHERE s.id = ?";
+      String query = "select s.name as star, s.birthYear as birthYear, m.id as movieId, m.title " +
+          "as movieName from stars s  inner join stars_in_movies sm on sm.starId = s.id " +
+          "inner join movies m on m.id = sm.movieId WHERE s.id = ?";
 
       // Declare our statement
       PreparedStatement statement = connection.prepareStatement(query);
@@ -52,23 +49,23 @@ public class SingleStarServlet extends HttpServlet {
       statement.setString(1, id);
 
       // Perform the query
-      ResultSet resultSet = statement.executeQuery(query);
+      ResultSet resultSet = statement.executeQuery();
 
       JsonArray jsonArray = new JsonArray();
 
       // Iterate through each row of resultSet
       while (resultSet.next()) {
-        String star_id = resultSet.getString("id");
-        String star_name = resultSet.getString("name");
+        String star_name = resultSet.getString("star");
         String star_year = resultSet.getString("birthYear");
-        String movie_id = resultSet.getString("id");
+        String movie_id = resultSet.getString("movieId");
+        String movie_name = resultSet.getString("movieName");
 
         // Create a JsonObject based on the data we retrieve from rs
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("star_id", star_id);
         jsonObject.addProperty("star_name", star_name);
-        jsonObject.addProperty("star_dob", star_year);
+        jsonObject.addProperty("star_year", star_year);
         jsonObject.addProperty("movie_id", movie_id);
+        jsonObject.addProperty("movie_name", movie_name);
 
         jsonArray.add(jsonObject);
       }
