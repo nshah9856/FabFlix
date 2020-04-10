@@ -35,7 +35,7 @@ const handleMoviesResult = data => {
 
     const rows = Object.values(movie_data).map(
         ({movie_id, movie_director, movie_year, movie_title, movie_genre, movie_star, movie_rating}) => {
-            const aTag = `<a href="movie?id=${movie_id}">${movie_title}</a>`
+            const aTag = `<a href="movie.html?id=${movie_id}">${movie_title}</a>`
             return `
                 <tr>
                     <th>${aTag}</th>

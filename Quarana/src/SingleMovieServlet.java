@@ -15,7 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 //Declare WebServlet
-@WebServlet(name = "SingleMovieServlet", urlPatterns = "/movie")
+@WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/movie")
 public class SingleMovieServlet extends HttpServlet {
   private static final long serialVersionUID = 2L;
 
@@ -37,13 +37,14 @@ public class SingleMovieServlet extends HttpServlet {
       // Get a connection from dataSource
       Connection connection = dataSource.getConnection();
 
-      String query = "SELECT m.*, s.name, g.name, r.rating FROM movies m " +
-          "INNER JOIN stars_in_movies sm ON sm.movieId = m.id " +
-          "INNER JOIN genres_in_movies gm ON gm.movieId = m.id " +
-          "INNER JOIN stars s ON s.id = sm.starId " +
-          "INNER JOIN genres g ON  g.id = gm.genreId " +
-          "INNER JOIN ratings r ON r.movieId = m.id"+
-          "WHERE m.id = ?";
+      // Construct a query with parameter represented by "?"
+      String query = "SELECT m.*, s.name as star,s.id as starId, g.name as genre, r.rating FROM movies m " +
+              "INNER JOIN stars_in_movies sm ON sm.movieId = m.id " +
+              "INNER JOIN genres_in_movies gm ON gm.movieId = m.id " +
+              "INNER JOIN stars s ON s.id = sm.starId " +
+              "INNER JOIN genres g ON  g.id = gm.genreId " +
+              "INNER JOIN ratings r ON r.movieId = m.id "+
+              "WHERE m.id = ?";
 
       // Declare our statement
       PreparedStatement statement = connection.prepareStatement(query);
@@ -52,8 +53,7 @@ public class SingleMovieServlet extends HttpServlet {
       // num 1 indicates the first "?" in the query
       statement.setString(1, id);
 
-      // Perform the query
-      ResultSet resultSet = statement.executeQuery(query);
+      ResultSet resultSet = statement.executeQuery();
 
       JsonArray jsonArray = new JsonArray();
 
@@ -62,9 +62,10 @@ public class SingleMovieServlet extends HttpServlet {
         String movie_title = resultSet.getString("title");
         String movie_year = resultSet.getString("year");
         String movie_director = resultSet.getString("director");
-        String movie_genres = resultSet.getString("genres");
-        String movie_stars = resultSet.getString("stars");
-        String movie_ratings = resultSet.getString("ratings");
+        String movie_genres = resultSet.getString("genre");
+        String movie_stars = resultSet.getString("star");
+        String movie_star_id = resultSet.getString("starId");
+        String movie_ratings = resultSet.getString("rating");
 
         // Create a JsonObject based on the data we retrieve from resultSet
         JsonObject jsonObject = new JsonObject();
@@ -74,8 +75,8 @@ public class SingleMovieServlet extends HttpServlet {
         jsonObject.addProperty("movie_director", movie_director);
         jsonObject.addProperty("movie_genres", movie_genres);
         jsonObject.addProperty("movie_stars", movie_stars);
+        jsonObject.addProperty("movie_star_id", movie_star_id);
         jsonObject.addProperty("movie_ratings", movie_ratings);
-
         jsonArray.add(jsonObject);
       }
 
