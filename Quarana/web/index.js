@@ -16,6 +16,7 @@ const fetchMovies = async () => {
 
 const handleMoviesResult = data => {
     const movie_data = {}
+    console.log(data)
     data.forEach(
         ({movie_id, movie_director, movie_year, movie_title, movie_genre, movie_star, movie_rating}) => {
             const genres = movie_data[movie_id] ? [...movie_data[movie_id].movie_genre, movie_genre] : [movie_genre]

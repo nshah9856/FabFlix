@@ -47,7 +47,7 @@ const hadleStarResult = data => {
       return `
                 <tr>
                     <th>${star_name}</th>
-                    <th>${star_year}</th>
+                    <th>${star_year ? star_year : 'N/A'}</th>
                     <th>
                     ${
         movies.map(({name,id}) => `<a href=movie.html?id=${id}>${name}</a>`).join(', ')

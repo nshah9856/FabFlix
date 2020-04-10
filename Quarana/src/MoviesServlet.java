@@ -25,6 +25,7 @@ public class MoviesServlet extends HttpServlet {
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     response.setContentType("application/json"); // Response mime type
+    response.setCharacterEncoding("UTF-8");
 
     // Output stream to STDOUT
     PrintWriter out = response.getWriter();
@@ -75,6 +76,7 @@ public class MoviesServlet extends HttpServlet {
       out.write(jsonArray.toString());
       // set response status to 200 (OK)
       response.setStatus(200);
+
 
       resultSet.close();
       statement.close();
