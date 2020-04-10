@@ -16,7 +16,7 @@ Import Project from External Model > Choose Maven
 4. Apply changes and click `OK`
 5. Click `Run` application to build, connect server and launch Tomcat.
 
-![Tomcat Build Configuration](./images/tomcat_build)
+![Tomcat Build Configuration](./images/tomcat_build.png)
 
 You are now all set up! Visit FabFlix on at `http://localhost:8080/FabFlix`.
 
