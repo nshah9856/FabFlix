@@ -1,8 +1,23 @@
 # Authors: [Nisarg Shah](https://github.com/nshah9856), [Joanna Ko](https://github.com/joannatko)
 ## Demo Video
-*Link coming soon*
+View our Project 1 Demo Video here: https://youtu.be/OlU795mq0hg
 
-## How to Deploy FabFlix
+## Deploy FabFlix (Remotely)
+1. Git clone repository: `git clone https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-46/`
+
+2. Change directory into repo: `cd cs122b-spring20-team-46`
+
+3. Build war file: `mvn package`
+
+4. Copy the war file into tomcat: `cp ./target/*.war /home/ubuntu/tomcat/webapps`
+
+5. Open Tomcat Domain at *\<your-amazon-instance-domain\>:8080*
+
+6. Go to Manager Apps > Click FabFlix
+
+You should now be on the movie list page.
+
+## Deploy FabFlix (Locally on Development Machine)
 ### Git clone repository
 `git clone https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-46/`
 
@@ -25,4 +40,6 @@ You are now all set up! Visit FabFlix on at `http://localhost:8080/FabFlix`.
 *Adding Summary Here*
 
 ### Joanna Ko
-*Adding Summary Here*
+- Worked on the SQL table creations for `moviedb`. 
+- Worked on the java files.
+- Changed/fixed front end UI.
