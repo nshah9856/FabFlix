@@ -1,6 +1,6 @@
 # Authors: [Nisarg Shah](https://github.com/nshah9856), [Joanna Ko](https://github.com/joannatko)
 ## Demo Video
-View our Project 1 Demo Video here: https://youtu.be/OlU795mq0hg
+View our Project 1 Demo Video here: https://www.youtube.com/watch?v=OlU795mq0hg
 
 ## Deploy FabFlix (Remotely)
 1. Git clone repository: `git clone https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-46/`
@@ -37,9 +37,11 @@ You are now all set up! Visit FabFlix on at `http://localhost:8080/FabFlix`.
 
 ## Group Member Contributions: Division of Tasks
 ### Nisarg Shah
-*Adding Summary Here*
+- Worked with Joanna on SQL queries and table creattions.
+- Mainly worked on the front-end (JS and HTML)
+- Conducted fixes in pom.xml and servlet's
 
 ### Joanna Ko
 - Worked on the SQL table creations for `moviedb`. 
-- Worked on the java files.
+- Worked on the Java files.
 - Changed/fixed front end UI.
