@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>FabFlix</title>
+    <style>
+        #floating-wrapper{
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+        }
+        .btn-circle.btn-sm {
+            width: 30px;
+            height: 30px;
+            padding: 6px 0px;
+            border-radius: 15px;
+            font-size: 8px;
+            text-align: center;
+        }
+        body{
+            padding-bottom: 50px;
+        }
+
+        #floating-button{
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+<nav id='header' class="navbar navbar-light" style="justify-content: center;
+background-color: #C8D0E9">
+    <a class="navbar-brand" href="/FabFlix">
+        <img src="https://img.icons8.com/dusk/64/000000/movie-projector.png" width="30" height="30" class="d-inline-block align-top" alt="">
+        <img src="./images/FabFlix_logo.png" height="30" class="d-inline-block align-top" alt="">
+    </a>
+</nav>
+<table id="star" class="table table-bordered table-hover">
+    <thead class="thead-light">
+    <tr>
+        <th>Name</th>
+        <th>Birth Year</th>
+        <th>Movies</th>
+    </tr>
+    </thead>
+    <tbody id="star_body"></tbody>
+</table>
+
+
+<div id="floating-wrapper">
+    <a id="floating-button" class="btn-circle btn-sm" href="/FabFlix">
+        <img src="https://img.icons8.com/dusk/64/000000/movie-projector.png" width="30" height="30" class="d-inline-block align-top" alt="">
+    </a>
+</div>
+
+<script src="star.js"></script>
+</body>
+</html>
