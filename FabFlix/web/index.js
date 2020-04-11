@@ -17,9 +17,9 @@ const fetchMovies = async () => {
 const handleMoviesResult = data => {
     const movie_data = {}
     data.forEach(
-        ({movie_id, movie_director, movie_year, movie_title, movie_genre, movie_star, movie_rating}) => {
+        ({movie_id, movie_director, movie_year, movie_title, movie_genre, movie_star_name, movie_star_id, movie_rating}) => {
             const genres = movie_data[movie_id] ? [...movie_data[movie_id].movie_genre, movie_genre] : [movie_genre]
-            const stars = movie_data[movie_id] ? [...movie_data[movie_id].movie_star, movie_star] : [movie_star]
+            const stars = movie_data[movie_id] ? [...movie_data[movie_id].movie_star, {name: movie_star_name, id: movie_star_id}] : [{name: movie_star_name, id: movie_star_id}]
 
             movie_data[movie_id] = {
                 movie_id,
@@ -48,7 +48,7 @@ const handleMoviesResult = data => {
                     </th>
                     <th>
                     ${
-                        movie_star.slice(0,3).map(star => `${star}`).join(', ')
+                        movie_star.slice(0,3).map(({name, id}) => `<a href="star.html?id=${id}">${name}</a>`).join(', ')
                     }
                     </th>
                     <th>${movie_rating}</th>
