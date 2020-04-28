@@ -39,6 +39,14 @@ Import Project from External Model > Choose Maven
 
 You are now all set up! Visit FabFlix on at `http://localhost:8080/FabFlix`.
 
+## Substring Matching Design
+Used the following from Instructions on P2 Task 2 (`LIKE`)
+
+Mainly our `LIKE` statements reside under `SearchServlet.java` files, but there is also a replicatino (not exactly the same) under `PageCountServlet.java` to make sure we are fetching the correct # of pages.
+
+For example: `where title like ? "AND year like ? AND director like ?` -- This is the format adapted in the file and `?` if replaced with parameter setting (`PreparedStatement`)
+
+
 ## Group Member Contributions: Division of Tasks (Project 1)
 ### Nisarg Shah
 - Worked with Joanna on SQL queries and table creattions.
@@ -53,7 +61,10 @@ You are now all set up! Visit FabFlix on at `http://localhost:8080/FabFlix`.
 ## Group Member Contributions: Division of Tasks (Project 2)
 
 ### Nisarg Shah
-- 
+- Created and worked with Joanna on:
+  - MainPage, NavBar, Payment, Cart, Order, etc.. (JS)
+  - HTML/CSS
+  - Servlets for fetches of genre's, sessions, payments, orders, etc.. (Java)
 
 ### Joanna Ko
 - Login Page
