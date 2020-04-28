@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    <title>FabFlix</title>
+
+    <style>
+        body{
+            background-color: #141414;
+            color: #ffffff;
+        }
+
+        .search_bar{
+            margin-bottom: auto;
+            margin-top: auto;
+            height: 60px;
+            background-color: inherit;
+            border-radius: 30px;
+            padding: 10px;
+            display: flex;
+        }
+
+        .search_input{
+            color: white;
+            border: 0;
+            outline: 0;
+            background: none;
+            line-height: 40px;
+            width: 10vw;
+        }
+
+        .search_icon{
+            height: 40px;
+            width: 40px;
+            float: right;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            background: white;
+            color: #e74c3c;
+        }
+
+    </style>
+</head>
+<body>
+<!--    NavBar   -->
+<div class="col" style="text-align: -webkit-center;">
+    <nav class="col navbar navbar-expand-lg navbar-light" style="justify-content: left; background-color: rgb(20, 20, 20)">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+            <img src="./images/FabFlix_logo.png" height="30" class="d-inline-block align-top" alt="">
+        </a>
+        <div class="collapse navbar-collapse" id="navbarToggler">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" style="color: #fff" href="mainPage.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="browse" data-toggle="collapse" href="#displayGenres" role="button" aria-expanded="false" style="color: #fff">Browse</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="movieListPage" style="color: #fff" href="#">Movies</a>
+                </li>
+            </ul>
+            <form id="title-search" class="form-inline my-2 my-lg-0 justify-content-center" autocomplete="off">
+                <div class="justify-content-center">
+                    <div class="row">
+                        <div class="search_bar">
+                            <input class="search_input" type="text" name="title" placeholder="Search..." style="width: auto">
+                            <input type="submit" hidden>
+                            <a class="search_icon" data-toggle="collapse" href="#collapseForm" role="button" aria-expanded="false" >
+                                <i class="fas fa-search" style="color: #e74c3c"></i>
+                            </a>
+                        </div>
+                        <div class="search_bar" style="margin-left: -10px;">
+                            <a class="search_icon" href="#"><i class="fas fa-shopping-cart" style="color: #e74c3c"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </nav>
+    <div class="collapse" id="collapseForm">
+        <form id="advance-search" autocomplete="off" style="display: flex; flex-direction: column;">
+            <!-- If decide to add border bottom addd : border-bottom-color: #e74c3c !important to style and border-bottom to class -->
+            <input class="search_input" style="width: inherit" type="text" name="title" placeholder="Title">
+            <input class="search_input" style="width: inherit"  type="number" name="year" placeholder="Year">
+            <input class="search_input" style="width: inherit"  type="text" name="director" placeholder="Director">
+            <input class="search_input" style="width: inherit"  type="text" name="star" placeholder="Star">
+            <button style="background-color: white" type="submit">Advanced Search <i class="fas fa-search" style="color: #e74c3c"></i></button>
+        </form>
+    </div>
+    <div class="collapse" id="displayGenres">
+        <div class="col">
+            <div class="row" id="genres" style="justify-content: center; width: 50vw; color: #e74c3c">
+            </div>
+            <div class="row" id="titles-numeric" style="justify-content: center; width: 50vw; color: #e74c3c">
+            </div>
+            <div class="row" id="titles-alpha" style="justify-content: center; width: 50vw; color: #e74c3c">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card text-white bg-dark mb-3" style="max-width: 60vw; margin-left: auto; margin-right: auto; margin-top: 30vh;">
+    <div id="message" class="card-header"></div>
+    <div class="card-body">
+        <h5 class="card-title">Shopping Cart</h5>
+        <table id="table" style="display:none" class="table table-bordered table-hover">
+            <thead class="thead">
+            <tr>
+                <th style="width: 1em"></th>
+                <th>Title</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody id="cart"></tbody>
+        </table>
+        <a id="payment" href="payment.html" class="btn btn-primary" style="display:none;float: right">Proceed to payment</a>
+
+    </div>
+</div>
+
+
+<!-- Bootstrap JS support -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<!--  JS Script  -->
+<script src="./cart.js" />
+<!-- Bootstrap JS support -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+</body>
+</html>

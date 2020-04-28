@@ -14,6 +14,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * TODO: Same as movie list except not 3, all
+ * (prob single query)
+ */
 //Declare WebServlet
 @WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/movie")
 public class SingleMovieServlet extends HttpServlet {
@@ -39,13 +43,19 @@ public class SingleMovieServlet extends HttpServlet {
       Connection connection = dataSource.getConnection();
 
       // Construct a query with parameter represented by "?"
-      String query = "SELECT m.*, s.name as star,s.id as starId, g.name as genre, r.rating FROM movies m " +
-              "INNER JOIN stars_in_movies sm ON sm.movieId = m.id " +
-              "INNER JOIN genres_in_movies gm ON gm.movieId = m.id " +
-              "INNER JOIN stars s ON s.id = sm.starId " +
-              "INNER JOIN genres g ON  g.id = gm.genreId " +
-              "INNER JOIN ratings r ON r.movieId = m.id "+
-              "WHERE m.id = ?";
+      String query = "SELECT m.id, m.title, m.year, m.director, m.price, stars_name as stars_name, " +
+          "stars_id as stars_id, gtemp.genres as genres,gtemp.genre_ids as genre_ids, r.rating as" +
+          " " +
+          "rating from movies m " +
+          "LEFT JOIN ratings r on r.movieId = m.id " +
+          "INNER JOIN (SELECT gm.movieId, GROUP_CONCAT(g.name order by g.name asc) as genres, " +
+          "GROUP_CONCAT(g.id order by g.name asc) as genre_ids " +
+          "from genres_in_movies gm " +
+          "INNER JOIN genres g ON g.id = gm.genreId GROUP BY movieId) as gtemp ON gtemp.movieId = m.id " +
+          "INNER JOIN (select sm.movieId, GROUP_CONCAT(s.id order by s.movieCnt desc, s.name) as stars_id, " +
+          "GROUP_CONCAT(s.name order by s.movieCnt desc, s.name) as stars_name from stars_in_movies sm " +
+          "INNER JOIN (select s.id, s.name, count(*) as movieCnt from stars_in_movies sm, stars s where sm.starId = s.id group by starId) as s ON s.id = sm.starId " +
+          "GROUP BY movieId) as stemp ON stemp.movieId = m.id where m.id = ?";
 
       // Declare our statement
       PreparedStatement statement = connection.prepareStatement(query);
@@ -60,21 +70,27 @@ public class SingleMovieServlet extends HttpServlet {
 
       // Iterate through each row of resultSet
       while (resultSet.next()) {
+        String movie_id = resultSet.getString("id");
         String movie_title = resultSet.getString("title");
         String movie_year = resultSet.getString("year");
         String movie_director = resultSet.getString("director");
-        String movie_genres = resultSet.getString("genre");
-        String movie_stars = resultSet.getString("star");
-        String movie_star_id = resultSet.getString("starId");
+        String movie_price = resultSet.getString("price");
+        String movie_genres = resultSet.getString("genres");
+        String movie_genres_ids = resultSet.getString("genre_ids");
+        String movie_stars = resultSet.getString("stars_name");
+        String movie_star_id = resultSet.getString("stars_id");
         String movie_ratings = resultSet.getString("rating");
 
         // Create a JsonObject based on the data we retrieve from resultSet
         JsonObject jsonObject = new JsonObject();
 
+        jsonObject.addProperty("movie_id", movie_id);
         jsonObject.addProperty("movie_title", movie_title);
         jsonObject.addProperty("movie_year", movie_year);
         jsonObject.addProperty("movie_director", movie_director);
+        jsonObject.addProperty("movie_price", movie_price);
         jsonObject.addProperty("movie_genres", movie_genres);
+        jsonObject.addProperty("movie_genre_ids", movie_genres_ids);
         jsonObject.addProperty("movie_stars", movie_stars);
         jsonObject.addProperty("movie_star_id", movie_star_id);
         jsonObject.addProperty("movie_ratings", movie_ratings);

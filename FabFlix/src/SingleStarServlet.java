@@ -38,9 +38,11 @@ public class SingleStarServlet extends HttpServlet {
       // Get a connection from dataSource
       Connection connection = dataSource.getConnection();
 
-      String query = "select s.name as star, s.birthYear as birthYear, m.id as movieId, m.title " +
-          "as movieName from stars s  inner join stars_in_movies sm on sm.starId = s.id " +
-          "inner join movies m on m.id = sm.movieId WHERE s.id = ?";
+      String query = "select sm.starId, s.name as star, s.birthYear, group_concat(m.title order " +
+          "by m.year desc, m.title) as movie_titles, " +
+          "group_concat(m.id order by m.year desc, m.title) as movie_ids " +
+          "from stars_in_movies sm, stars s, movies m " +
+          "WHERE sm.starId = s.id and m.id = sm.movieId and sm.starId = ? group by sm.starId";
 
       // Declare our statement
       PreparedStatement statement = connection.prepareStatement(query);
@@ -49,6 +51,7 @@ public class SingleStarServlet extends HttpServlet {
       // num 1 indicates the first "?" in the query
       statement.setString(1, id);
 
+      System.out.println(statement);
       // Perform the query
       ResultSet resultSet = statement.executeQuery();
 
@@ -58,15 +61,15 @@ public class SingleStarServlet extends HttpServlet {
       while (resultSet.next()) {
         String star_name = resultSet.getString("star");
         String star_year = resultSet.getString("birthYear");
-        String movie_id = resultSet.getString("movieId");
-        String movie_name = resultSet.getString("movieName");
+        String movie_ids = resultSet.getString("movie_ids");
+        String movie_titles = resultSet.getString("movie_titles");
 
         // Create a JsonObject based on the data we retrieve from rs
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("star_name", star_name);
         jsonObject.addProperty("star_year", star_year);
-        jsonObject.addProperty("movie_id", movie_id);
-        jsonObject.addProperty("movie_name", movie_name);
+        jsonObject.addProperty("movie_ids", movie_ids);
+        jsonObject.addProperty("movie_titles", movie_titles);
 
         jsonArray.add(jsonObject);
       }

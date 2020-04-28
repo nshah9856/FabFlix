@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+        <title>FabFlix</title>
+        <style>
+            body{
+                background-color: #141414;
+                color: #ffffff;
+            }
+
+            .search_bar{
+                margin-bottom: auto;
+                margin-top: auto;
+                height: 60px;
+                background-color: inherit;
+                border-radius: 30px;
+                padding: 10px;
+                display: flex;
+            }
+
+            .search_input{
+                color: white;
+                border: 0;
+                outline: 0;
+                background: none;
+                line-height: 40px;
+                width: 10vw;
+            }
+
+            .search_icon{
+                height: 40px;
+                width: 40px;
+                float: right;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 50%;
+                background: white;
+                color: #e74c3c;
+            }
+            th{
+                color: #bbb2b2;
+            }
+            .pagination {
+                display: -ms-flexbox;
+                flex-wrap: wrap;
+                display: flex;
+                padding-left: 0;
+                list-style: none;
+                border-radius: 0.25rem;
+            }
+
+        </style>
+    </head>
+    <body>
+        <!--    NavBar   -->
+        <div class="col" style="text-align: -webkit-center;">
+            <nav class="col navbar navbar-expand-lg navbar-light" style="justify-content: left; background-color: rgb(20, 20, 20)">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="#">
+                    <img src="./images/FabFlix_logo.png" height="30" class="d-inline-block align-top" alt="">
+                </a>
+                <div class="collapse navbar-collapse" id="navbarToggler">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" style="color: #fff" href="mainPage.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="browse" data-toggle="collapse" href="#displayGenres" role="button" aria-expanded="false" style="color: #fff">Browse</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"  style="color: #fff" href="#">Movies</a>
+                        </li>
+                    </ul>
+                    <form id="title-search" class="form-inline my-2 my-lg-0 justify-content-center" autocomplete="off">
+                        <div class="justify-content-center">
+                            <div class="row">
+                                <div class="search_bar">
+                                    <input class="search_input" type="text" name="title" placeholder="Search..." style="width: auto">
+                                    <input type="submit" hidden>
+                                    <a class="search_icon" data-toggle="collapse" href="#collapseForm" role="button" aria-expanded="false" >
+                                        <i class="fas fa-search" style="color: #e74c3c"></i>
+                                    </a>
+                                </div>
+                                <div class="search_bar" style="margin-left: -10px;">
+                                    <a class="search_icon" href="cart.html"><i class="fas fa-shopping-cart" style="color: #e74c3c"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </nav>
+            <div class="collapse" id="collapseForm">
+                <form id="advance-search" autocomplete="off" style="display: flex; flex-direction: column;">
+                    <!-- If decide to add border bottom addd : border-bottom-color: #e74c3c !important to style and border-bottom to class -->
+                    <input class="search_input" style="width: inherit" type="text" name="title" placeholder="Title">
+                    <input class="search_input" style="width: inherit"  type="number" name="year" placeholder="Year">
+                    <input class="search_input" style="width: inherit"  type="text" name="director" placeholder="Director">
+                    <input class="search_input" style="width: inherit"  type="text" name="star" placeholder="Star">
+                    <button style="background-color: white" type="submit">Advanced Search <i class="fas fa-search" style="color: #e74c3c"></i></button>
+                </form>
+            </div>
+            <div class="collapse" id="displayGenres">
+                <div class="col">
+                    <div class="row" id="genres" style="justify-content: center; width: 50vw; color: #e74c3c">
+                    </div>
+                    <div class="row" id="titles-numeric" style="justify-content: center; width: 50vw; color: #e74c3c">
+                    </div>
+                    <div class="row" id="titles-alpha" style="justify-content: center; width: 50vw; color: #e74c3c">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--  Table for Movie List  -->
+        <table id="movies" class="table table-bordered table-hover">
+            <thead class="thead">
+            <tr>
+                <th>
+                    Title
+                    <a id="title_first" class="fas fa-sort" style="cursor: pointer"></a>
+                    <a id="title_asc" class="fas fa-sort-up" style="float: right; cursor: pointer"></a>
+                    <a id="title_desc" class="fas fa-sort-down" style="float: right; cursor: pointer"></a>
+                </th>
+                <th>Year</th>
+                <th>Director</th>
+                <th>Genres</th>
+                <th>Stars</th>
+                <th>
+                    Rating
+                    <a id="rating_first" class="fas fa-sort" style="cursor: pointer"></a>
+                    <a id="rating_asc" class="fas fa-sort-up" style="float: right; cursor: pointer"></a>
+                    <a id="rating_desc" class="fas fa-sort-down" style="float: right; cursor: pointer"></a>
+                </th>
+            </tr>
+            </thead>
+            <tbody id="movies_body"></tbody>
+        </table>
+
+        <div style="padding-top:1em;
+            padding-bottom: 1em">
+            <div class="dropdown" style="float: left">
+                <label for="limitSelector">Results Per Page:</label>
+                <select id="limitSelector" style="color: #e74c3c">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+<!--            <div class="d-flex align-content-start flex-wrap">-->
+                <div id = "page" class="pagination pagination-sm flex-sm-wrap" style="justify-content: center;">
+    <!--                front end adds pages dynamically -->
+                </div>
+<!--            </div>-->
+        </div>
+
+
+        <!-- Bootstrap JS support -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <!--  JS Script  -->
+        <script src="./movieList.js" />
+        <!-- Bootstrap JS support -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    </body>
+</html>

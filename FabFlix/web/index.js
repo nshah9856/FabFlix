@@ -64,7 +64,6 @@ const handleMoviesResult = data => {
 fetchMovies().then(handleMoviesResult)
 
 window.onscroll = e => {
-  console.log("Whatever")
   const floatingButton = document.getElementById('floating-button')
   e.target.documentElement.scrollTop > document.getElementById('header').scrollHeight ?
     floatingButton.style.opacity = 1 :

@@ -37,12 +37,33 @@ public class MoviesServlet extends HttpServlet {
       // Declare our statement
       Statement statement = connection.createStatement();
 
-      String query = "SELECT m.*, s.name as star_name,s.id as star_id, g.name as genre " +
-              "FROM top20_movies m " +
-              "INNER JOIN stars_in_movies sm ON sm.movieId = m.id " +
-              "INNER JOIN genres_in_movies gm ON gm.movieId = m.id " +
-              "INNER JOIN stars s ON s.id = sm.starId " +
-              "INNER JOIN genres g ON  g.id = gm.genreId";
+//      String query = "SELECT m.id, m.title, m.year, m.director, stars_name as stars_name, " +
+//          "stars_id as stars_id, gtemp.genres as genres, r.rating as rating from movies m " +
+//          "LEFT JOIN ratings r on r.movieId = m.id " +
+//          "INNER JOIN (SELECT gm.movieId, GROUP_CONCAT(g.name order by g.name asc) as genres from genres_in_movies gm " +
+//          "INNER JOIN genres g ON g.id = gm.genreId GROUP BY movieId) as gtemp ON gtemp.movieId = m.id " +
+//          "INNER JOIN (select sm.movieId, GROUP_CONCAT(s.id order by s.movieCnt desc, s.name) as stars_id, " +
+//          "GROUP_CONCAT(s.name order by s.movieCnt desc, s.name) as stars_name from stars_in_movies sm " +
+//          "INNER JOIN (select s.id, s.name, count(*) as movieCnt from stars_in_movies sm, stars s where sm.starId = s.id " +
+//          "group by starId) as s ON s.id = sm.starId GROUP BY movieId) as stemp ON stemp.movieId = m.id";
+
+
+      String query =  "SELECT m.id, m.title, m.year, m.director, m.price, "+
+      "starss.star_names as stars_name, starss.star_ids as stars_id "+
+       "from movies as m JOIN("+
+        "SELECT sm.movieId, "+
+      "GROUP_CONCAT(s.name order by s.movieCnt desc, s.name) as star_names, "+
+      "GROUP_CONCAT(s.id order by s.movieCnt desc, s.name) as star_ids FROM stars_in_movies AS sm "+
+        "INNER JOIN  ("+
+          "select s.id, s.name,count(*) as movieCnt "+
+          "from stars_in_movies smtemp, stars s "+
+          "where smtemp.starId = s.id GROUP by s.id "+
+          ") as s on s.id = sm.starId group by sm.movieId) as starss on starss.movieId=m.id "+
+        "LEFT JOIN ratings r on r.movieId = m.id "+
+        "INNER JOIN ("+
+          "SELECT gm.movieId, GROUP_CONCAT(g.name order by g.name asc) as genres from genres_in_movies gm "+
+          "INNER JOIN genres g ON g.id = gm.genreId GROUP BY movieId "+
+        ") as gtemp ON gtemp.movieId = m.id";
 
       // Perform the query
       ResultSet resultSet = statement.executeQuery(query);
@@ -55,6 +76,7 @@ public class MoviesServlet extends HttpServlet {
         String movie_title = resultSet.getString("title");
         String movie_year = resultSet.getString("year");
         String movie_director = resultSet.getString("director");
+        String movie_price = resultSet.getString("price");
         String movie_rating = resultSet.getString("rating");
         String movie_genre = resultSet.getString("genre");
         String movie_star_name = resultSet.getString("star_name");
@@ -66,6 +88,7 @@ public class MoviesServlet extends HttpServlet {
         jsonObject.addProperty("movie_title", movie_title);
         jsonObject.addProperty("movie_year", movie_year);
         jsonObject.addProperty("movie_director", movie_director);
+        jsonObject.addProperty("movie_price", movie_price);
         jsonObject.addProperty("movie_genre", movie_genre);
         jsonObject.addProperty("movie_star_name", movie_star_name);
         jsonObject.addProperty("movie_star_id", movie_star_id);
