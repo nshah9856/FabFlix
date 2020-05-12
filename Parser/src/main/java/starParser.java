@@ -131,7 +131,7 @@ public class starParser extends DefaultHandler {
       SAXParser sp = spf.newSAXParser();
 
       //parse the file and also register this class for call backs
-      sp.parse(new File("~/stanford-movie/casts124.xml"), this);
+      sp.parse(new File("stanford-movies/casts124.xml"), this);
 
 
     } catch (SAXException se) {
