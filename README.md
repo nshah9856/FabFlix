@@ -1,7 +1,7 @@
 # Authors: [Nisarg Shah](https://github.com/nshah9856), [Joanna Ko](https://github.com/joannatko)
 ## Demo Video
-View our Project 1 Demo Video here: https://www.youtube.com/watch?v=OlU795mq0hg
-View our Project 2 Demo Video here: https://www.youtube.com/watch?v=SDhbaxUaCQI
+- View our Project 1 Demo Video here: https://www.youtube.com/watch?v=OlU795mq0hg
+- View our Project 2 Demo Video here: https://www.youtube.com/watch?v=SDhbaxUaCQI
 ```diff
 ! View our Project 3 Demo Video here: 
 ```
@@ -91,7 +91,10 @@ For example: `where title like ? "AND year like ? AND director like ?` -- This i
 
 ## Group Member Contributions: Division of Tasks (Project 3)
 ### Nisarg Shah
-- 
+- Worked on reCaPTCHA and HTTPS 
+- Helped with understanding and writing encryption and stored procedure
+- Contributed in the _dashboard screen.
+- Worked with joanna on parsing and storing xml data efficiently
 
 ### Joanna Ko
 - Worked with Nisarg with reCaPTCHA set up
