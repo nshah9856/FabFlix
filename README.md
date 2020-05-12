@@ -50,6 +50,8 @@ For example: `where title like ? "AND year like ? AND director like ?` -- This i
 
 # Project 3 - 
 
+#### NOTE: To go back from dashboard to FabFlix go to /FabFlix/mainPage.html 
+
 ## Inconsistences 
   We have written two files [inconsistentGenreInMovies.md](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-46/blob/master/Parser/inconsistentGenreInMovies.md) and [inconsistentGenres.md](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-46/blob/master/Parser/inconsistentGenres.md)
   
