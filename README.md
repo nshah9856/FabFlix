@@ -1,10 +1,12 @@
 # Authors: [Nisarg Shah](https://github.com/nshah9856), [Joanna Ko](https://github.com/joannatko)
 ## Demo Video
 View our Project 1 Demo Video here: https://www.youtube.com/watch?v=OlU795mq0hg
+View our Project 2 Demo Video here: https://www.youtube.com/watch?v=SDhbaxUaCQI
 ```diff
-! View our Project 2 Demo Video here: 
+! View our Project 3 Demo Video here: 
 ```
-https://www.youtube.com/watch?v=SDhbaxUaCQI
+ https://www.youtube.com/watch?v=PhrO_PNp6J4
+ 
 
 ## Deploy FabFlix (Remotely)
 1. Git clone repository: `git clone https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-46/`
@@ -31,7 +33,7 @@ Import Project from External Model > Choose Maven
 ### To Connect Tomcat 
 1. Click `Add Configurations` / `Edit Configurations`
 2. Fix button should appear at bottom right screen 
-3. Click `Quarana:war exploded`
+3. Click `FabFlix:war exploded`
 4. Apply changes and click `OK`
 5. Click `Run` application to build, connect server and launch Tomcat.
 
@@ -45,6 +47,20 @@ Used the following from Instructions on P2 Task 2 (`LIKE`)
 Mainly our `LIKE` statements reside under `SearchServlet.java` files, but there is also a replicatino (not exactly the same) under `PageCountServlet.java` to make sure we are fetching the correct # of pages.
 
 For example: `where title like ? "AND year like ? AND director like ?` -- This is the format adapted in the file and `?` if replaced with parameter setting (`PreparedStatement`)
+
+# Project 3 - 
+
+## Inconsistences 
+  We have written two files [inconsistentGenreInMovies.md](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-46/blob/master/Parser/inconsistentGenreInMovies.md) and [inconsistentGenres.md](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-46/blob/master/Parser/inconsistentGenres.md)
+  
+  We have not written out as talked about in the demo inconsistences in parsing (such as `parseInt` kind of problems. 
+
+  ## Efficiency
+  To make parsing efficient, we adapted two crucial steps.
+  1. We load all needed data into JAVA memory in one query ( saving back-n-forth with db)
+  2. We output the `new` inserts such as for `stars`, `genres`, `movies`, `stars_in_movies`, and `genres_in_movies` into `.txt` files so that we can easily and efficiently `load` them into the sql database. 
+  
+  This we noticed saved us HUGE amount of time compared to when we tried single inserts in the middle of parsing. 
 
 
 ## Group Member Contributions: Division of Tasks (Project 1)
@@ -72,3 +88,16 @@ For example: `where title like ? "AND year like ? AND director like ?` -- This i
 - Single Movie/Stars, Movie List page with Nisarg
 - Creditcard Page
 - Worked on front end (html/css) for correlated pages
+
+## Group Member Contributions: Division of Tasks (Project 3)
+### Nisarg Shah
+- 
+
+### Joanna Ko
+- Worked with Nisarg with reCaPTCHA set up
+- Worked on HTTPS
+- Worked on Encryping passwords
+- Wrote Stored Procedure for adding movies
+- Worked with Nisarg on XML parsing
+
+
