@@ -42,7 +42,7 @@ public class starParser extends DefaultHandler {
     InstantiationException {
     String loginUser = "mytestuser";
     String loginPasswd = "mypassword";
-    String loginUrl = "jdbc:mysql://localhost:3306/backup";
+    String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 
     Class.forName("com.mysql.jdbc.Driver").newInstance();
     Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
