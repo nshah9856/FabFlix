@@ -122,7 +122,8 @@ const handleMoviesResult = data => {
                 movie_price,
                 movie_genre: movie_genre_ids.split(',').map((id,index) => ({id:id, name:genres[index]})),
                 movie_star: movie_star_id.split(',').map((id,index) => ({id:id, name:titles[index]})),
-                movie_ratings
+                movie_ratings: movie_ratings ? movie_ratings : 'N/A'
+
             }
         }
     )

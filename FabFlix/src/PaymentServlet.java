@@ -34,6 +34,19 @@ public class PaymentServlet extends HttpServlet {
     // Output stream to STDOUT
     PrintWriter out = response.getWriter();
 
+    if ((givenId == null || givenId.length() == 0) &&
+        (givenFirst == null || givenFirst.length() == 0) &&
+        (givenLast == null || givenLast.length() == 0) &&
+        (givenExpiration == null || givenExpiration.length() == 0)) {
+      JsonObject jsonObject = new JsonObject();
+      jsonObject.addProperty("status", "fail");
+      jsonObject.addProperty("message", "Card information must be provided");
+      response.setStatus(200);
+      out.write(jsonObject.toString());
+      out.close();
+      return;
+    }
+
     try {
       // Get a connection from dataSource
       Connection connection = dataSource.getConnection();
@@ -50,7 +63,6 @@ public class PaymentServlet extends HttpServlet {
       // Perform the query
       ResultSet resultSet = statement.executeQuery();
 
-
       JsonObject jsonObject = new JsonObject();
       while (resultSet.next()) {
         id = resultSet.getString("id");
@@ -64,20 +76,14 @@ public class PaymentServlet extends HttpServlet {
         jsonObject.addProperty("lastName", lastName);
         jsonObject.addProperty("expiration", expiration);
 
-
       }
 
       if (givenFirst.equals(firstName) && givenLast.equals(lastName) &&
           givenId.equals(id) && givenExpiration.equals(expiration)) {
 
-
-// write JSON string to output
-
-
         jsonObject.addProperty("status", "success");
         jsonObject.addProperty("message", "success");
 
-        // set response status to 200 (OK)
 
       } else {
         // Login fail

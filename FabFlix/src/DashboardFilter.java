@@ -8,8 +8,8 @@ import java.util.ArrayList;
 /**
  * Servlet Filter implementation class LoginFilter
  */
-@WebFilter(filterName = "LoginFilter", urlPatterns = "/*")
-public class LoginFilter implements Filter {
+@WebFilter(filterName = "DashboardFilter", urlPatterns = {"/_dashboard/*"})
+public class DashboardFilter implements Filter {
     private final ArrayList<String> allowedURIs = new ArrayList<>();
 
     /**
@@ -20,7 +20,8 @@ public class LoginFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        System.out.println("LoginFilter: " + httpRequest.getRequestURI());
+        System.out.println("Dashboard: " + httpRequest.getRequestURI());
+
 
         // Check if this URL is allowed to access without logging in
         if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
@@ -29,13 +30,11 @@ public class LoginFilter implements Filter {
             return;
         }
 
-        // Redirect to login page if the "user" attribute doesn't exist in session
-        if (httpRequest.getSession().getAttribute("user") == null) {
-//            httpResponse.sendRedirect("login.html");
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/login.html");
-
+//         Redirect to login page if the "user" attribute doesn't exist in session
+        if (httpRequest.getSession().getAttribute("employee") == null) {
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/_dashboard_login.html");
         } else {
-            chain.doFilter(request, response);
+                chain.doFilter(request,response);
         }
     }
 
@@ -45,23 +44,13 @@ public class LoginFilter implements Filter {
          Always allow your own login related requests(html, js, servlet, etc..)
          You might also want to allow some CSS files, etc..
          */
-        return allowedURIs.stream().anyMatch(requestURI.toLowerCase()::endsWith) || requestURI.contains("_dashboard") || requestURI.contains("images");
+        return allowedURIs.stream().anyMatch(requestURI.toLowerCase()::endsWith);
     }
 
     public void init(FilterConfig fConfig) {
-//        allowedURIs.add("_dashboard/api/metaData");
-//        allowedURIs.add("_dashboard_login.html");
-//        allowedURIs.add("_dashboard_login.js");
+        allowedURIs.add("_dashboard_login.html");
+        allowedURIs.add("_dashboard_login.js");
         allowedURIs.add("api/dashboard_login");
-//        allowedURIs.add("_dashboard");
-//        allowedURIs.add("_dashboard/docs.html");
-//        allowedURIs.add("_dashboard/docs.js");
-//        allowedURIs.add("_dashboard/index.html");
-        allowedURIs.add("index.html");
-
-        allowedURIs.add("login.html");
-        allowedURIs.add("login.js");
-        allowedURIs.add("api/login");
     }
 
     public void destroy() {

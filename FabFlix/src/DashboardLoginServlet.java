@@ -10,16 +10,14 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-
-import org.jasypt.util.password.PasswordEncryptor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 
-@WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "DashboardLoginServlet", urlPatterns = "/api/dashboard_login")
+public class DashboardLoginServlet extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
@@ -35,13 +33,12 @@ public class LoginServlet extends HttpServlet {
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
-        System.out.println("IN THE FUNCTION!");
+
         // Verify reCAPTCHA
         try {
-            System.out.println("VERYFYING.....");
             RecaptchaVerifyUtils.verify(gRecaptchaResponse);
         } catch (Exception e) {
-            System.out.println("IN THE ERROR...");
+
             // write error message JSON object to output
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("errorMessage", e.getMessage());
@@ -51,79 +48,67 @@ public class LoginServlet extends HttpServlet {
             response.setStatus(200);
             return;
         }
-        String username = request.getParameter("username");
+        String email = request.getParameter("email");
         String password = request.getParameter("password");
         JsonObject responseJsonObject = new JsonObject();
-        System.out.println("BOUT TO CONNECT");
 
         try {
             // Get a connection from dataSource
             Connection connection = dataSource.getConnection();
 
-            String query = "SELECT * FROM customers AS c WHERE c.email = ?";
-            String customer_email = "";
-            String customer_password = "";
-            String customer_id = "";
+            String query = "SELECT * FROM employees AS e WHERE e.email = ?";
+            String employee_email = "";
+            String employee_password = "";
             // Declare our statement
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, username);
+            statement.setString(1, email);
+
+            System.out.println("Query" + statement);
             // Perform the query
             ResultSet resultSet = statement.executeQuery();
 
-            System.out.println("EXECUTED QUERY!");
             boolean success = false;
-            PasswordEncryptor e = new StrongPasswordEncryptor();
-
-           if (resultSet.next()) {
-               customer_email = resultSet.getString("email");
-               customer_password = resultSet.getString("password");
-               customer_id = resultSet.getString("id");
-               // use the same encryptor to compare the user input password with encrypted password stored in DB
-               System.out.println("CHECKING PASSWORD");
-               System.out.println(password + " = = " + customer_password);
-               success = e.checkPassword(password, customer_password);
-               System.out.println("AFTER CHECK PASSWORD");
-           }
-            System.out.println("SUCESSS:: "  + success);
-           if(success == false){
-               // Login fail
-               responseJsonObject.addProperty("status", "fail");
-               responseJsonObject.addProperty("message", "incorrect password");
-               response.setStatus(200);
-               out.write(responseJsonObject.toString());
-               out.close();
-               connection.close();
-               statement.close();
+            if (resultSet.next()) {
+                employee_email = resultSet.getString("email");
+                employee_password = resultSet.getString("password");
+                // use the same encryptor to compare the user input password with encrypted password stored in DB
+                success = new StrongPasswordEncryptor().checkPassword(password, employee_password);
+            }
+            System.out.println("Success" + success);
+            if(success == false){
+                // Login fail
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "incorrect password");
+                response.setStatus(200);
+                out.write(responseJsonObject.toString());
+                out.close();
+                connection.close();
+                statement.close();
                 return;
-           }
-           if (username.equals(customer_email)) {
-
+            }
+            if (email.equals(employee_email)) {
                 // Login success:
-
-                // set this user into the session
-                request.getSession().setAttribute("user", new User(username));
-
                 responseJsonObject.addProperty("status", "success");
                 responseJsonObject.addProperty("message", "success");
-                request.getSession().setAttribute("user", customer_id);
+
+                request.getSession().setAttribute("employee", email);
+
             } else {
                 // Login fail
                 responseJsonObject.addProperty("status", "fail");
 
                 // sample error messages. in practice, it is not a good idea to tell user which one is incorrect/not exist.
-                if (!username.equals(customer_email)) {
-                    responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
+                if (!email.equals(employee_email)) {
+                    responseJsonObject.addProperty("message", "email " + email + " doesn't exist");
                 }
             }
 
-            System.out.println("CLOSING CONNECTION...");
             out.write(responseJsonObject.toString());
             out.close();
             connection.close();
             statement.close();
 
         } catch (Exception e) {
-            System.out.println("SOME WEIRD ERROR..?");
 
             // write error message JSON object to output
             JsonObject jsonObject = new JsonObject();

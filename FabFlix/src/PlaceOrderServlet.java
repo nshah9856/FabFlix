@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
+
 
 //Declare WebServlet
 @WebServlet(name = "PlaceOrderServlet", urlPatterns = "/api/order")
@@ -56,7 +56,8 @@ public class PlaceOrderServlet extends HttpServlet {
             statement.executeUpdate();
 
             // Get the insert results
-            ResultSet resultSet = connection.createStatement().executeQuery("select * from sales where id=LAST_INSERT_ID()");
+            ResultSet resultSet = connection.prepareStatement("select * from sales where id=LAST_INSERT_ID()").executeQuery();
+
 
             JsonArray jsonArray = new JsonArray();
 

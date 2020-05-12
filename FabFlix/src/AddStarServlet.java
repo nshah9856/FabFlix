@@ -17,68 +17,63 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 //Declare WebServlet
-@WebServlet(name = "FetchGenresServlet", urlPatterns = "/api/genres")
-public class FetchGenres extends HttpServlet {
+@WebServlet(name = "AddStarServlet", urlPatterns = "/_dashboard/api/addStar")
+public class AddStarServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     // Create a dataSource which registered in web.xml
     @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json"); // Response mime type
         response.setCharacterEncoding("UTF-8");
 
-        HttpSession session = request.getSession();
-        String ret = (String) session.getAttribute("genres");
+        String name = request.getParameter("name");
+        String year = request.getParameter("year");
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
-        if(ret != null){
-            System.out.println("Found cached genres");
-            out.write(ret);
-            out.close();
-            return;
-        }
+
         try {
             // Get a connection from dataSource
             Connection connection = dataSource.getConnection();
 
-            String query = "SELECT * FROM genres ORDER BY name asc;";
+            ResultSet resultSet = connection.prepareStatement("select concat(\"nm\",(select max(substring(id, 3)) from stars) + 1) as starID").executeQuery();
+            resultSet.next(); // There only should be one value
+            System.out.println("NEW ID"  + resultSet.getString("starID"));
+
+            String query = "INSERT INTO stars VALUES(?, ?, ?)";
 
             // Declare our statement
             PreparedStatement statement = connection.prepareStatement(query);
 
+            statement.setString(1, resultSet.getString("starID")); //set the id
+            statement.setString(2, name);
+            if(year != null)
+                statement.setInt(3, Integer.parseInt(year));
+            else
+                statement.setString(3, null);
+
+            System.out.println("Updatig.. " + statement);
             // Perform the query
-            ResultSet resultSet = statement.executeQuery();
+            statement.executeUpdate();
 
+            System.out.println("failed?");
+            JsonObject responseJsonObject = new JsonObject();
 
-            JsonArray jsonArray = new JsonArray();
-
-            // Iterate through each row of resultSet
-            while (resultSet.next()) {
-                String genre_id = resultSet.getString("id");
-                String genre_name = resultSet.getString("name");
-
-                // Create a JsonObject based on the data we retrieve from resultSet
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("genre_id", genre_id);
-                jsonObject.addProperty("genre_name", genre_name);
-
-                jsonArray.add(jsonObject);
-            }
+            responseJsonObject.addProperty("success", true);
+            responseJsonObject.addProperty("starId",resultSet.getString("starID"));
 
             // write JSON string to output
-            out.write(jsonArray.toString());
-            session.setAttribute("genres", jsonArray.toString());
+            out.write(responseJsonObject.toString());
 
             // set response status to 200 (OK)
             response.setStatus(200);
-
-
             resultSet.close();
             statement.close();
             connection.close();
+
         } catch (Exception e) {
 
             // write error message JSON object to output
