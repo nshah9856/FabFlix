@@ -67,7 +67,9 @@ For example: `where title like ? "AND year like ? AND director like ?` -- This i
  - If length if less than 6 than 2 errors are allowed. 
  - Else, 3 errors are allowed. (3 is the most errors one can make for fuzzy search to be considered)
  ```
- - We conduct an `OR` query to consider Fulltext search along with Fuzzy search.
+ - We convert the title to lowercase when conducting `ed` to not include case errors as typing errors.
+ - We conduct an `OR` query to consider Fulltext search along with Fuzzy search. 
+ (Ex: `select * from movies where match(title) against ("+s* +lov*" in boolean mode) OR ed("s lov",lower(title))`
 
 # Project 3 - 
 
