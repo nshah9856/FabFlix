@@ -25,9 +25,9 @@ const handleSearch = event => {
         search['star'] = star.value
     }
 
-    // console.log(search)
+    // ////console.log(search)
     forwardSearch(search)
-    // console.log("Title", title.value, "Year", year.value, "Director", director.value, "Star", star.value)
+    // ////console.log("Title", title.value, "Year", year.value, "Director", director.value, "Star", star.value)
 }
 
 const fetchGenres = async () => {
@@ -72,7 +72,7 @@ const titleClick = title => {
 
 const forwardSearch = search => {
     const queryString = Object.keys(search).map(key => key + '=' + search[key]).join('&');
-    console.log(queryString)
+    ////console.log(queryString)
     window.location = `movieList.html?${queryString}`
 }
 
@@ -104,14 +104,95 @@ const fetchMovies = async () => {
     }
 
     const json = await data.json()
-    console.log("Result! ")
-    console.log(json)
+    ////console.log("Result! ")
+    ////console.log(json)
     return json
 }
+const handleLookup = (query, doneCallback) => {
+    //console.log("sending AJAX request to backend Java Servlet")
+
+    // TODO: if you want to check past query results first, you can do it here
+    if(query.length < 3) return;
+    console.log("autocomplete initiated")
+    const data = localStorage.getItem(query)
+    if(data) {
+        console.log("using cached results")
+        handleLookupAjaxSuccess(JSON.parse(data),query,doneCallback)
+        return;
+    }
+    console.log("sending AJAX request to backend Java Servlet")
+
+    // sending the HTTP GET request to the Java Servlet endpoint hero-suggestion
+    // with the query data
+    jQuery.ajax({
+        "method": "GET",
+        // generate the request url from the query.
+        // escape the query string to avoid errors caused by special characters
+        "url": "api/autocomplete?query=" + escape(query),
+        "success": data => {
+            // pass the data, query, and doneCallback function into the success handler
+            handleLookupAjaxSuccess(data, query, doneCallback)
+        },
+        "error": function(errorData) {
+            //console.log("lookup ajax error")
+            //console.log(errorData)
+        }
+    })
+}
+
+const handleLookupAjaxSuccess = (data, query, doneCallback) => {
+    //console.log("lookup ajax successful")
+
+    //console.log(typeof data)
+    // parse the string into JSON
+    var jsonData = $.parseJSON(JSON.stringify(data));
+    //console.log(jsonData)
+
+    // TODO: if you want to cache the result into a global variable you can do it here
+    localStorage.setItem(query,JSON.stringify(data))
+    console.log("Suggestion list")
+    console.log(data)
+    // call the callback function provided by the autocomplete library
+    // add "{suggestions: jsonData}" to satisfy the library response format according to
+    //   the "Response Format" section in documentation
+    doneCallback( { suggestions: jsonData } );
+}
+
+const handleSelectSuggestion = (suggestion) => {
+    // TODO: jump to the specific result page based on the selected suggestion
+
+    //console.log("you select " + suggestion["value"] + " with ID " + suggestion["data"]["id"])
+    window.location.href = `movie.html?id=${suggestion["data"]["id"]}`
+}
+
+
+document.getElementById('title-search').addEventListener('submit', handleSearch)
+document.getElementById('advance-search').addEventListener('submit', handleSearch)
+$('#autocomplete').autocomplete({
+    // documentation of the lookup function can be found under the "Custom lookup function" section
+    lookup: (query, doneCallback) => {
+        handleLookup(query, doneCallback)
+    },
+    onSelect: (suggestion) => {
+        handleSelectSuggestion(suggestion)
+    },
+    // set delay time
+    deferRequestBy: 300,
+    // there are some other parameters that you might want to use to satisfy all the requirements
+    // TODO: add other parameters, such as minimum characters
+});
+
+$('#autocomplete').keypress(function(event) {
+    // keyCode 13 is the enter key
+    if (event.keyCode == 13) {
+        // pass the value of the input box to the handler function
+        forwardSearch({title: $('#autocomplete').val(), filter_search: true})
+    }
+})
 
 const handleMoviesResult = data => {
     const movie_data = {}
-    console.log(data)
+    //console.log(data)
     data.forEach(
         ({movie_id, movie_director, movie_year, movie_title, movie_genres, movie_price, movie_stars_name, movie_stars_id, movie_rating}) => {
             movie_data[movie_id] = {
@@ -120,9 +201,9 @@ const handleMoviesResult = data => {
                 movie_year,
                 movie_title,
                 movie_price,
-                movie_genres: movie_genres.split(','),
-                movie_stars: movie_stars_name.split(','),
-                movie_stars_id: movie_stars_id.split(','),
+                movie_genres: movie_genres ? movie_genres.split(',') : [],
+                movie_stars: movie_stars_name ? movie_stars_name.split(',') : [],
+                movie_stars_id: movie_stars_id ? movie_stars_id.split(','): [],
                 movie_rating: movie_rating ? movie_rating : 'N/A'
             }
         }
@@ -155,7 +236,7 @@ const handleMoviesResult = data => {
             `
         }
     )
-    console.log("rows", rows.length)
+    //console.log("rows", rows.length)
 
     document.getElementById('movies_body').innerHTML = rows.join('')
     localStorage.setItem("searchParameter", params.toString())
@@ -264,8 +345,8 @@ const handlePagination = async () => {
     const limit = params.get('limit')
     total_pages = Math.ceil(parseInt(json.title_count) / limit)
 
-    console.log("Total rows", json.title_count)
-    console.log("Pages", total_pages)
+    //console.log("Total rows", json.title_count)
+    //console.log("Pages", total_pages)
 
     const pages = []
     pages.push(`<li class="page-item"><a class="page-link" id="previousButton" onclick="previousClick()" style="display:none; color: #e74c3c">Previous</a></li>`)
@@ -284,13 +365,13 @@ const previousClick = () => {
 }
 
 const nextClick = () => {
-    console.log("current ", page)
+    //console.log("current ", page)
     pageClick(page+1)
 }
 
 const pageClick = p => {
     page = p;
-    console.log("after", page)
+    //console.log("after", page)
     const limit = parseInt(params.get("limit"))
     params.set("offset", (page-1)*limit)
     window.location.search = params.toString()

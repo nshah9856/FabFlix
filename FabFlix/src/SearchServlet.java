@@ -62,6 +62,9 @@ public class SearchServlet extends HttpServlet {
             String title_search = request.getParameter("title_search") != null
                  ? request.getParameter("title_search") : "%";
 
+            String filter_search = request.getParameter("filter_search") != null ?
+                request.getParameter("filter_search") : "false";
+
             String title = request.getParameter("title") != null ? request.getParameter("title") : "%";
 
             String year = request.getParameter("year") != null ? request.getParameter("year") :
@@ -89,11 +92,19 @@ public class SearchServlet extends HttpServlet {
                 "GROUP_CONCAT(s.name order by s.movieCnt desc, s.name) as stars_name from stars_in_movies sm " +
                 "INNER JOIN (select s.id, s.name, count(*) as movieCnt from stars_in_movies sm, stars s where sm.starId = s.id " +
                 "group by starId) as s ON s.id = sm.starId where s.name like ? GROUP BY " +
-                "movieId) as stemp ON stemp.movieId = m.id where title ^ ? " +
+                "movieId) as stemp ON stemp.movieId = m.id where ^ " +
                 "AND year like ? AND director like ?";
 
-           query = query.replace("^", (title_search.equals("%")) ? "LIKE" : "REGEXP");
-
+            if (filter_search.equals("true"))
+            {
+              query = query.replace("^", "match(title) against (? IN BOOLEAN MODE)" +
+                      " OR ed('" + title.toLowerCase() +
+                      "', lower(title)) <= " +
+                      (title.length() < 3 ? 0 : title.length() < 4 ? 1 : title.length() < 6 ? 2 : 3)) + " ";
+            } else {
+              query = query.replace("^", "title " + ((title_search.equals("%")) ? "LIKE" :
+                  "REGEXP") + "? ");
+            }
             if(rating_first != null){
                 if(rating_sort != null) {
                     query += " order by r.rating " + rating_sort + ", m.title ";
@@ -119,7 +130,6 @@ public class SearchServlet extends HttpServlet {
                     }
                 }
             }
-
             if (limit != null) {
                 query += " limit " + limit;
             }
@@ -146,25 +156,33 @@ public class SearchServlet extends HttpServlet {
             else {
                 statement.setString(2, "%" + star.toLowerCase() + "%");
             }
-
-            if(title_search.equals("%")){
-                if(title.equals("%")){
-                    statement.setString(3, "%");
+            System.out.println("filter search: " + filter_search + " title: " + title);
+            if (filter_search.equals("true") && !title.equals("%"))
+            {
+              String [] filters = title.split(" ");
+              String filter_string = "";
+              for (String word : filters)
+              {
+                filter_string += "+" + word + "* ";
+              }
+              System.out.println("SETTING FILTER STRING TO " + filter_string);
+              statement.setString(3, filter_string);
+            } else {
+              if (title_search.equals("%")) {
+                if (title.equals("%")) {
+                  statement.setString(3, "%");
+                } else {
+                  statement.setString(3, "%" + title + "%");
                 }
-                else{
-                    statement.setString(3, "%" + title + "%");
+                System.out.println("TITLE SEARCH NOT GIVEN");
+              } else {
+                if (title.equals("*")) {
+                  statement.setString(3, "^[^0-9A-Za-z]");
+                } else {
+                  statement.setString(3, "^[" + title.toLowerCase() + title.toUpperCase() + "]");
                 }
-                System.out.println("TITLE SEARHC NOT GIVEN");
-            }
-            else{
-                if(title.equals("*")){
-                    statement.setString(3, "^[^0-9A-Za-z]");
-                }
-                else{
-                    statement.setString(3, "^[" + title.toLowerCase() + title.toUpperCase() + "]");
-                }
-                System.out.println("TITLE SEARHC GIVEN");
-
+                System.out.println("TITLE SEARCH GIVEN");
+              }
             }
 
 
@@ -178,7 +196,6 @@ public class SearchServlet extends HttpServlet {
 
             System.out.println(statement.toString());
             ResultSet resultSet = statement.executeQuery();
-
             JsonArray jsonArray = new JsonArray();
 
             // Iterate through each row of resultSet
@@ -234,4 +251,9 @@ public class SearchServlet extends HttpServlet {
         }
 
     }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
+
 }

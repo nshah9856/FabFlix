@@ -7,9 +7,9 @@ const employeeForm = $("#employee_form");
 function handleLoginResult(resultDataString) {
     let resultDataJson = JSON.parse(resultDataString);
 
-    console.log("handle login response");
-    console.log(resultDataJson);
-    console.log(resultDataJson["status"]);
+    //console.log("handle login response");
+    //console.log(resultDataJson);
+    //console.log(resultDataJson["status"]);
 
     if (resultDataJson["errorMessage"]) {
         alert(resultDataJson["errorMessage"])
@@ -23,8 +23,8 @@ function handleLoginResult(resultDataString) {
     } else {
         // If login fails, the web page will display 
         // error messages on <div> with id "login_error_message"
-        console.log("show error message");
-        console.log(resultDataJson["message"]);
+        //console.log("show error message");
+        //console.log(resultDataJson["message"]);
         $("#employee_login_error_message").text(resultDataJson["message"]);
         grecaptcha.reset();
     }
@@ -35,7 +35,7 @@ function handleLoginResult(resultDataString) {
  * @param formSubmitEvent
  */
 function submitLoginForm(formSubmitEvent) {
-    console.log("submit login form");
+    //console.log("submit login form");
     /**
      * When users click the submit button, the browser will not direct
      * users to the url defined in HTML form. Instead, it will call this

@@ -44,6 +44,7 @@ public class PageCountServlet extends HttpServlet {
       String savedDirector = (String)session.getAttribute("director");
       String savedStar = (String)session.getAttribute("star");
 
+      String filter_search = request.getParameter("filter_search");
       String genre_search = request.getParameter("genre_search");
       String genre = request.getParameter("genre");
       String title_search = request.getParameter("title_search");
@@ -97,35 +98,42 @@ public class PageCountServlet extends HttpServlet {
             "GROUP BY movieId) as stemp ON stemp.movieId = m.id ";
       }
 
-      if(title_search != null && title_search.equals("true")){
-        query += "where m.title REGEXP ?";
+      if(filter_search != null){
+        query += "where match(title) against (? IN BOOLEAN MODE)";
+
       }
-      else{                 // This is an advanced search!
-        int p = 0;
-        if(title != null){
-          p++;
-          query += "where m.title like '%" + title + "%'";
+      else{
+        if(title_search != null && title_search.equals("true")){
+          query += "where m.title REGEXP ?";
         }
-        if(year != null){
-          if(p > 0) {
-            query += " AND ";
-            query += "m.year = " + year;
+        else{                 // This is an advanced search!
+          int p = 0;
+          if(title != null){
+            p++;
+            query += "where m.title like '%" + title + "%'";
           }
-          else{
-            query += "where m.year = " + year;
+          if(year != null){
+            if(p > 0) {
+              query += " AND ";
+              query += "m.year = " + year;
+            }
+            else{
+              query += "where m.year = " + year;
+            }
+            p++;
           }
-          p++;
-        }
-        if(director != null){
-          if(p > 0){
-            query += " AND ";
-            query += "m.director like '%" + director + "%'";
+          if(director != null){
+            if(p > 0){
+              query += " AND ";
+              query += "m.director like '%" + director + "%'";
+            }
+            else{
+              query += "where m.director like '%" + director + "%'";
+            }
+            p++;
           }
-          else{
-            query += "where m.director like '%" + director + "%'";
-          }
-          p++;
-        }
+      }
+
 
       }
       System.out.println("Query" + query);
@@ -137,6 +145,15 @@ public class PageCountServlet extends HttpServlet {
       // num 1 indicates the first "?" in the query
       if(genre_search != null && genre_search.equals("true")){
         statement.setInt(1, Integer.parseInt(genre));
+      }
+      else if(filter_search != null){
+        String [] filters = title.split(" ");
+        String filter_string = "";
+        for (String word : filters)
+        {
+          filter_string += "+" + word + "* ";
+        }
+        statement.setString(1, filter_string);
       }
       else if(title_search != null && title_search.equals("true")){
         if(title.equals("*")) {
@@ -184,6 +201,10 @@ public class PageCountServlet extends HttpServlet {
       response.setStatus(500);
     }
     out.close();
+  }
+  protected void doPost(HttpServletRequest request,
+                        HttpServletResponse response) throws ServletException, IOException {
+    doGet(request,response);
   }
 }
 

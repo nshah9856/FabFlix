@@ -40,7 +40,7 @@ const titleClick = title => {
 
 const forwardSearch = search => {
   const queryString = Object.keys(search).map(key => key + '=' + search[key]).join('&');
-  console.log(queryString)
+  //console.log(queryString)
   window.location = `movieList.html?${queryString}`
 }
 
@@ -67,9 +67,9 @@ const handleSearch = event => {
     search['star'] = star.value
   }
 
-  // console.log(search)
+  // //console.log(search)
   forwardSearch(search)
-  // console.log("Title", title.value, "Year", year.value, "Director", director.value, "Star", star.value)
+  // //console.log("Title", title.value, "Year", year.value, "Director", director.value, "Star", star.value)
 }
 
 const submitPaymentForm = (event) => {
@@ -117,7 +117,7 @@ const placeOrder = async () => {
 
   const ret = {}
   const results = await Promise.all(cartItems.map(async ({movie_id, movie_quantity},index) => {
-    console.log("movie id:", movie_id)
+    //console.log("movie id:", movie_id)
 
     const d = await fetch(
         `api/order?customer_id=${customer_id}&movie_id=${movie_id}&movie_quantity=${movie_quantity}`,
@@ -130,8 +130,8 @@ const placeOrder = async () => {
     return j
   }))
 
-  console.log(cartItems, customer_id)
-  console.log(results)
+  //console.log(cartItems, customer_id)
+  //console.log(results)
 
   localStorage.setItem("order", JSON.stringify(ret))
   window.location.href = "order.html"

@@ -57,7 +57,7 @@ public class LoginFilter implements Filter {
 //        allowedURIs.add("_dashboard/docs.html");
 //        allowedURIs.add("_dashboard/docs.js");
 //        allowedURIs.add("_dashboard/index.html");
-        allowedURIs.add("index.html");
+//        allowedURIs.add("index.html");
 
         allowedURIs.add("login.html");
         allowedURIs.add("login.js");

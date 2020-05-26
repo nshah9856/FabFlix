@@ -55,6 +55,6 @@ const displayTableInfo = (data) => {
 window.onload = async () => {
 
     const data = await fetchMetaData()
-    console.log(data)
+    //console.log(data)
     displayTableInfo(data)
 }

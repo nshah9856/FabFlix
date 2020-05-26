@@ -8,7 +8,7 @@ const handleSubmit = async (event) => {
     //Error checking
     errorMessage.innerHTML = !name ? "Name is required!" : ""
 
-    console.log(name, year)
+    //console.log(name, year)
 
     const data = await fetch(
         `api/addStar?name=${name}` + `${!year ? '' : '&year='+year}`,

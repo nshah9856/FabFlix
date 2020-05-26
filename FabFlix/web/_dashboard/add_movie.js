@@ -12,7 +12,7 @@ const handleSubmit = async (event) => {
     //Error checking
     errorMessage.innerHTML = !title || !director || !year || !genre || !star ? "All fields are required!" : ""
 
-    console.log(title, director, year, genre, star)
+    //console.log(title, director, year, genre, star)
 
     const data = await fetch(
         `api/addMovie?title=${title}&director=${director}&year=${year}&genre=${genre}&star=${star}`,
@@ -26,7 +26,7 @@ const handleSubmit = async (event) => {
 
     const json = await data.json()
 
-    console.log(json)
+    //console.log(json)
     if(json['message'].startsWith("SUCCESS")){ // we inserted it!
         document.getElementById('message').innerHTML = json['message']
         document.getElementById("body").style.display = 'none';

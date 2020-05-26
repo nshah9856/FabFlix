@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <!-- Using jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- include jquery autocomplete JS  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.7/jquery.autocomplete.min.js"></script>
 
     <title>FabFlix</title>
     <style>
@@ -46,6 +51,9 @@
             background: white;
             color: #e74c3c;
         }
+        .autocomplete-selected { color: #e74c3c; }
+        .autocomplete-suggestions { background: rgba(52,58,64); overflow: auto; }
+
         th{
             color: #bbb2b2;
         }
@@ -64,7 +72,7 @@
         <div class="collapse navbar-collapse" id="navbarToggler">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" style="color: #fff" href="mainPage.html">Home</a>
+                    <a class="nav-link" style="color: #fff" href="index.html">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="browse" data-toggle="collapse" href="#displayGenres" role="button" aria-expanded="false" style="color: #fff">Browse</a>
@@ -72,12 +80,15 @@
                 <li class="nav-item">
                     <a class="nav-link" id="movieListPage"  style="color: #fff" href="#">Movies</a>
                 </li>
+                <li class="nav-item">
+
+                    <input class="search_input" type="text" id="autocomplete" name="title" autocomplete="off" placeholder="Search..." style="margin-left:2rem;width:40vw">
+                </li>
             </ul>
             <form id="title-search" class="form-inline my-2 my-lg-0 justify-content-center" autocomplete="off">
                 <div class="justify-content-center">
                     <div class="row">
                         <div class="search_bar">
-                            <input class="search_input" type="text" name="title" placeholder="Search..." style="width: auto">
                             <input type="submit" hidden>
                             <a class="search_icon" data-toggle="collapse" href="#collapseForm" role="button" aria-expanded="false" >
                                 <i class="fas fa-search" style="color: #e74c3c"></i>
@@ -128,8 +139,6 @@
     <tbody id="movie_body"></tbody>
 </table>
 
-<!-- Bootstrap JS support -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <!--  JS Script  -->
 <script src="movie.js"></script>
 <!-- Bootstrap JS support -->
