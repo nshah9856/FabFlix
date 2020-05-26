@@ -2,10 +2,11 @@
 ## Demo Video
 - View our Project 1 Demo Video here: https://www.youtube.com/watch?v=OlU795mq0hg
 - View our Project 2 Demo Video here: https://www.youtube.com/watch?v=SDhbaxUaCQI
+- View our Project 3 Demo Video here: https://www.youtube.com/watch?v=PhrO_PNp6J4
 ```diff
-! View our Project 3 Demo Video here: 
+! View our Project 4 Demo Video here: 
 ```
- https://www.youtube.com/watch?v=PhrO_PNp6J4
+https://www.youtube.com/watch?v=-firS5-hSrM
  
 
 ## Deploy FabFlix (Remotely)
@@ -64,6 +65,18 @@ For example: `where title like ? "AND year like ? AND director like ?` -- This i
   
   This we noticed saved us HUGE amount of time compared to when we tried single inserts in the middle of parsing. 
 
+# Project 4 - Full Text Search, Autocomplete, Android Application, Fuzzy Search
+
+## To deploy our FabFlix on an Android Emulator, type the follow commands in your terminal.
+1. Create an APK package ``
+2. Open Android Emulator ``
+3. Move Android APK to Emulator
+
+## Design and Implementation of Fuzzy Search
+
+
+
+
 
 ## Group Member Contributions: Division of Tasks (Project 1)
 ### Nisarg Shah
@@ -105,4 +118,10 @@ For example: `where title like ? "AND year like ? AND director like ?` -- This i
 - Wrote Stored Procedure for adding movies
 - Worked with Nisarg on XML parsing
 
+## Group Member Contributions: Division of Tasks (Project 3)
+### Nisarg Shah
 
+### Joanna Ko
+- Wrote Full Text Search SQL commands
+- Worked on AutoComplete Servlet
+- Worked with Nisarg on Android Studio App
