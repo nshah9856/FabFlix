@@ -82,7 +82,7 @@ public class ListViewActivity extends Activity {
 //                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
-         url = "https://54.149.230.122:8443/FabFlix/api/";
+         url = "https://34.213.200.178:8443/FabFlix/api/";
 
          getTotalPages();
 

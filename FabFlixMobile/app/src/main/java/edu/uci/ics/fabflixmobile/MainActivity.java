@@ -41,7 +41,7 @@ public class MainActivity extends ActionBarActivity {
          * In Android, localhost is the address of the device or the emulator.
          * To connect to your machine, you need to use the below IP address
          * **/
-        url = "https://54.149.230.122:8443/FabFlix/api/";
+        url = "https://34.213.200.178:8443/FabFlix/api/";
 
         //assign a listener to call a function to handle the user request when clicking a button
         searchButton.setOnClickListener(new View.OnClickListener() {
