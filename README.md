@@ -49,6 +49,26 @@ Mainly our `LIKE` statements reside under `SearchServlet.java` files, but there 
 
 For example: `where title like ? "AND year like ? AND director like ?` -- This is the format adapted in the file and `?` if replaced with parameter setting (`PreparedStatement`)
 
+# Project 4 - Full Text Search, Autocomplete, Android Application, Fuzzy Search
+
+## To deploy our FabFlix on an Android Emulator, type the follow commands in your terminal.
+#### Note: This is assuming you cloned, and are in FabFlixMobile directory. With AndriodSDK installed.
+
+1. Create an APK package `./gradlew build`
+2. Open Android Emulator `emulator -avd {REPLACE_WITH_EMULATOR_NAME}`
+3. Install Android APK to Emulator `adb install -t app/build/outputs/apk/debug/app-debug.apk`
+
+## Design and Implementation of Fuzzy Search
+ We use the Levenshtein (Edit Distance) Algorithm (LEDA) to implement the fuzzy search. 
+  - Flamingo, from the Professor's research is used to make the UDF.
+ To make use of `ed` (Edit Distance Algorithm function in MySQL), in our backend (`AutoCompleteServlet.java` & `SearchServlet.java`) we dynamically set the `threshold` by checking the length of query. 
+ ```
+ - If length of title is less than 4, than 1 error is allowed. 
+ - If length if less than 6 than 2 errors are allowed. 
+ - Else, 3 errors are allowed. (3 is the most errors one can make for fuzzy search to be considered)
+ ```
+ - We conduct an `OR` query to consider Fulltext search along with Fuzzy search.
+
 # Project 3 - 
 
 #### NOTE: To go back from dashboard to FabFlix go to /FabFlix/mainPage.html 
@@ -64,18 +84,6 @@ For example: `where title like ? "AND year like ? AND director like ?` -- This i
   2. We output the `new` inserts such as for `stars`, `genres`, `movies`, `stars_in_movies`, and `genres_in_movies` into `.txt` files so that we can easily and efficiently `load` them into the sql database. 
   
   This we noticed saved us HUGE amount of time compared to when we tried single inserts in the middle of parsing. 
-
-# Project 4 - Full Text Search, Autocomplete, Android Application, Fuzzy Search
-
-## To deploy our FabFlix on an Android Emulator, type the follow commands in your terminal.
-1. Create an APK package ``
-2. Open Android Emulator ``
-3. Move Android APK to Emulator
-
-## Design and Implementation of Fuzzy Search
-
-
-
 
 
 ## Group Member Contributions: Division of Tasks (Project 1)
@@ -118,8 +126,11 @@ For example: `where title like ? "AND year like ? AND director like ?` -- This i
 - Wrote Stored Procedure for adding movies
 - Worked with Nisarg on XML parsing
 
-## Group Member Contributions: Division of Tasks (Project 3)
+## Group Member Contributions: Division of Tasks (Project 4)
 ### Nisarg Shah
+- Worked on the fronend of Autocomplete for FabFlix.
+- Worked with Joanna on developing the Mobile app (Constraint layouts, backend calls and parsing, etc.)
+- Integrated Fuzzy Search into the backend.
 
 ### Joanna Ko
 - Wrote Full Text Search SQL commands
