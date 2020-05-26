@@ -69,7 +69,7 @@ For example: `where title like ? "AND year like ? AND director like ?` -- This i
  ```
  - We convert the title to lowercase when conducting `ed` to not include case errors as typing errors.
  - We conduct an `OR` query to consider Fulltext search along with Fuzzy search. 
- (Ex: `select * from movies where match(title) against ("+s* +lov*" in boolean mode) OR ed("s lov",lower(title))`
+ - (Ex: `select * from movies where match(title) against ("+s* +lov*" in boolean mode) OR ed("s lov",lower(title))`)
 
 # Project 3 - 
 
