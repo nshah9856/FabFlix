@@ -6,7 +6,7 @@
 - View our Project 4 Demo Video here: https://www.youtube.com/watch?v=-firS5-hSrM
 
 ```diff
-! View our Project 5 Demo Video here: 
+! View our Project 5 Demo Video here: https://www.youtube.com/watch?v=DmsVD8qfRug
 ```
 
 
@@ -15,7 +15,8 @@
     
     - #### Names: Nisarg Shah, Joanna Ko
     
-    - #### Project 5 Video Demo Link: 
+    - #### Project 5 Video Demo Link: https://www.youtube.com/watch?v=DmsVD8qfRug 
+        - The JMeter file used for Demo has been added [here](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-46/blob/master/Demo.jmx)
 
     - #### Instruction of deployment: [Click here](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-46/blob/develop/README.md#deploy-fabflix-remotely)
 
