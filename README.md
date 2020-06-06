@@ -11,6 +11,8 @@
 
 
 - # General
+    ## NOTE : Our img/* folder is [/graphImages](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-46/tree/master/graphImages)
+    ##        Out logs/* folder is [/logs](https://github.com/UCI-Chenli-teaching/cs122b-spring20-team-46/tree/master/logs)
     - #### Team#: 46
     
     - #### Names: Nisarg Shah, Joanna Ko
