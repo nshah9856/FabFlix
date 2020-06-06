@@ -27,7 +27,7 @@ public class UpdateSecurePassword {
         // Get a connection from dataSource
         String loginUser = "mytestuser";
         String loginPasswd = "mypassword";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+        String loginUrl = "jdbc:mysql://172.31.19.119:3306/moviedb";
 
         Class.forName("com.mysql.jdbc.Driver").newInstance();
         Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);

@@ -1,7 +1,8 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,16 +15,11 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 //Declare WebServlet
 @WebServlet(name = "FetchGenresServlet", urlPatterns = "/api/genres")
 public class FetchGenres extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
-    // Create a dataSource which registered in web.xml
-    @Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json"); // Response mime type
@@ -41,6 +37,11 @@ public class FetchGenres extends HttpServlet {
             return;
         }
         try {
+            // Obtain our environment naming context
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource dataSource = (DataSource) envContext.lookup("jdbc/moviedb");
+
             // Get a connection from dataSource
             Connection connection = dataSource.getConnection();
 

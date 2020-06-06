@@ -1,7 +1,8 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -20,69 +23,42 @@ import java.sql.ResultSet;
 public class SearchServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // Create a dataSource which registered in web.xml
-    @Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json"); // Response mime type
         response.setCharacterEncoding("UTF-8");
-
-        System.out.println("ALL THE BEGIN");
+//        System.out.println("ALL THE BEGIN");
         // Output stream to STDOUT
-        PrintWriter out = response.getWriter();
+        long startTimeTS = System.nanoTime();
+        long elapsedTimeTJ = -1;
 
-        try {
-            // Get a connection from dataSource
-            Connection connection = dataSource.getConnection();
-            System.out.println("CONNECTED");
 
-            HttpSession session = request.getSession();
-
-            System.out.println("STARTING SEARCH");
-            String single_page = request.getParameter("single_page");
-            if(single_page != null){ // Request is coming from a single star / movie page so reload from cache.
-                System.out.println("Request made from single page");
-                String jsonObject = (String)session.getAttribute("queryResult");
-                if(jsonObject != null){
-                    System.out.println("Found a cached search");
-                    out.write(jsonObject);
-                    response.setStatus(200);
-                    out.close();
-                    connection.close();
-                    return;
-                }
-            }else{
-                System.out.println("NO SINGLE!");
-            }
-          
-            String genre_search = request.getParameter("genre_search") != null ?
+        String genre_search = request.getParameter("genre_search") != null ?
                 request.getParameter("genre_search") : "%";
 
-            String title_search = request.getParameter("title_search") != null
-                 ? request.getParameter("title_search") : "%";
+        String title_search = request.getParameter("title_search") != null
+                ? request.getParameter("title_search") : "%";
 
-            String filter_search = request.getParameter("filter_search") != null ?
+        String filter_search = request.getParameter("filter_search") != null ?
                 request.getParameter("filter_search") : "false";
 
-            String title = request.getParameter("title") != null ? request.getParameter("title") : "%";
+        String title = request.getParameter("title") != null ? request.getParameter("title") : "%";
 
-            String year = request.getParameter("year") != null ? request.getParameter("year") :
+        String year = request.getParameter("year") != null ? request.getParameter("year") :
                 "%";
 
-            String director = request.getParameter("director") != null ? request.getParameter("director") : "%";
+        String director = request.getParameter("director") != null ? request.getParameter("director") : "%";
 
-            String star = request.getParameter("star") != null ? request.getParameter("star") : "%";
+        String star = request.getParameter("star") != null ? request.getParameter("star") : "%";
 
-            String title_sort = request.getParameter("title_sort");
-            String rating_sort = request.getParameter("rating_sort");
-            String limit = request.getParameter("limit");
-            String offset = request.getParameter("offset");
-            String rating_first = request.getParameter("rating_first");
+        String title_sort = request.getParameter("title_sort");
+        String rating_sort = request.getParameter("rating_sort");
+        String limit = request.getParameter("limit");
+        String offset = request.getParameter("offset");
+        String rating_first = request.getParameter("rating_first");
+        String single_page = request.getParameter("single_page");
 
-            System.out.println("CREATING QUERY");
 
-            String query = "SELECT m.id, m.title, m.year, m.director, m.price, stars_name as " +
+        String query = "SELECT m.id, m.title, m.year, m.director, m.price, stars_name as " +
                 "stars_name, stars_id as  stars_id, gtemp.genres as genres, r.rating as rating from movies m " +
                 "LEFT JOIN ratings r on r.movieId = m.id INNER JOIN (" +
                 "SELECT gm.movieId, GROUP_CONCAT(g.name order by g.name asc) as genres from genres_in_movies gm " +
@@ -95,50 +71,86 @@ public class SearchServlet extends HttpServlet {
                 "movieId) as stemp ON stemp.movieId = m.id where ^ " +
                 "AND year like ? AND director like ?";
 
-            if (filter_search.equals("true"))
-            {
-              query = query.replace("^", "match(title) against (? IN BOOLEAN MODE)" +
-                      " OR ed('" + title.toLowerCase() +
-                      "', lower(title)) <= " +
-                      (title.length() < 3 ? 0 : title.length() < 4 ? 1 : title.length() < 6 ? 2 : 3)) + " ";
-            } else {
-              query = query.replace("^", "title " + ((title_search.equals("%")) ? "LIKE" :
-                  "REGEXP") + "? ");
-            }
-            if(rating_first != null){
-                if(rating_sort != null) {
-                    query += " order by r.rating " + rating_sort + ", m.title ";
-                    if (title_sort != null) {
-                        if (title_sort.equals("desc")) {
-                            query += "desc ";
-                        } else {
-                            query += "asc";
-                        }
+        if (filter_search.equals("true"))
+        {
+            query = query.replace("^", "match(title) against (? IN BOOLEAN MODE)" +
+                    " OR ed('" + title.toLowerCase() +
+                    "', lower(title)) <= " +
+                    (title.length() < 3 ? 0 : title.length() < 4 ? 1 : title.length() < 6 ? 2 : 3)) + " ";
+        } else {
+            query = query.replace("^", "title " + ((title_search.equals("%")) ? "LIKE" :
+                    "REGEXP") + "? ");
+        }
+        if(rating_first != null){
+            if(rating_sort != null) {
+                query += " order by r.rating " + rating_sort + ", m.title ";
+                if (title_sort != null) {
+                    if (title_sort.equals("desc")) {
+                        query += "desc ";
+                    } else {
+                        query += "asc";
                     }
                 }
             }
-            else{
-                if(title_sort != null){
-                    query += " order by m.title " + title_sort + ", r.rating ";
-                    if(rating_sort != null){
-                        if(rating_sort.equals("desc")){
-                            query += "desc ";
-                        }
-                        else{
-                            query += "asc";
-                        }
+        }
+        else{
+            if(title_sort != null){
+                query += " order by m.title " + title_sort + ", r.rating ";
+                if(rating_sort != null){
+                    if(rating_sort.equals("desc")){
+                        query += "desc ";
+                    }
+                    else{
+                        query += "asc";
                     }
                 }
             }
-            if (limit != null) {
-                query += " limit " + limit;
+        }
+        if (limit != null) {
+            query += " limit " + limit;
+        }
+
+        if (offset != null) {
+            query += " offset " + offset;
+        }
+
+
+        PrintWriter out = response.getWriter();
+
+        try {
+            // Obtain our environment naming context
+            long startTimeTJ = System.nanoTime();
+
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource dataSource = (DataSource) envContext.lookup("jdbc/moviedb");
+
+            // Get a connection from dataSource
+            Connection connection = dataSource.getConnection();
+//            System.out.println("CONNECTED");
+
+            HttpSession session = request.getSession();
+
+//            System.out.println("STARTING SEARCH");
+            if(single_page != null){ // Request is coming from a single star / movie page so reload from cache.
+//                System.out.println("Request made from single page");
+                String jsonObject = (String)session.getAttribute("queryResult");
+                if(jsonObject != null){
+//                    System.out.println("Found a cached search");
+                    out.write(jsonObject);
+                    response.setStatus(200);
+                    out.close();
+                    connection.close();
+                    return;
+                }
             }
 
-            if (offset != null) {
-                query += " offset " + offset;
-            }
 
-            System.out.println("PARAMETERING QUERY");
+//            System.out.println("CREATING QUERY");
+
+
+
+//            System.out.println("PARAMETERING QUERY");
             // Declare our statement
             PreparedStatement statement = connection.prepareStatement(query);
 
@@ -156,7 +168,7 @@ public class SearchServlet extends HttpServlet {
             else {
                 statement.setString(2, "%" + star.toLowerCase() + "%");
             }
-            System.out.println("filter search: " + filter_search + " title: " + title);
+//            System.out.println("filter search: " + filter_search + " title: " + title);
             if (filter_search.equals("true") && !title.equals("%"))
             {
               String [] filters = title.split(" ");
@@ -165,7 +177,7 @@ public class SearchServlet extends HttpServlet {
               {
                 filter_string += "+" + word + "* ";
               }
-              System.out.println("SETTING FILTER STRING TO " + filter_string);
+//              System.out.println("SETTING FILTER STRING TO " + filter_string);
               statement.setString(3, filter_string);
             } else {
               if (title_search.equals("%")) {
@@ -174,14 +186,14 @@ public class SearchServlet extends HttpServlet {
                 } else {
                   statement.setString(3, "%" + title + "%");
                 }
-                System.out.println("TITLE SEARCH NOT GIVEN");
+//                System.out.println("TITLE SEARCH NOT GIVEN");
               } else {
                 if (title.equals("*")) {
                   statement.setString(3, "^[^0-9A-Za-z]");
                 } else {
                   statement.setString(3, "^[" + title.toLowerCase() + title.toUpperCase() + "]");
                 }
-                System.out.println("TITLE SEARCH GIVEN");
+//                System.out.println("TITLE SEARCH GIVEN");
               }
             }
 
@@ -194,7 +206,7 @@ public class SearchServlet extends HttpServlet {
             }
             statement.setString(4, year);
 
-            System.out.println(statement.toString());
+//            System.out.println(statement.toString());
             ResultSet resultSet = statement.executeQuery();
             JsonArray jsonArray = new JsonArray();
 
@@ -230,11 +242,12 @@ public class SearchServlet extends HttpServlet {
             session.setAttribute("queryResult", jsonArray.toString());
             // set response status to 200 (OK)
             response.setStatus(200);
-
-
             resultSet.close();
             statement.close();
             connection.close();
+            long endTimeTJ = System.nanoTime();
+
+            elapsedTimeTJ = endTimeTJ - startTimeTJ;
         } catch (Exception e) {
 
             // write error message JSON object to output
@@ -249,6 +262,26 @@ public class SearchServlet extends HttpServlet {
         finally{
             out.close();
         }
+
+        long endTimeTS = System.nanoTime();
+
+
+        long elapsedTimeTS = endTimeTS - startTimeTS; // elapsed time in nano seconds. Note: print the values in nano seconds
+
+
+        System.out.println("Output is at " + getServletContext().getRealPath("/") );
+        File file = new File( getServletContext().getRealPath("/") + "log.txt");
+	if(file.createNewFile()){
+        FileWriter myWriter = new FileWriter(getServletContext().getRealPath("/") + file.getName());
+        myWriter.write("TS : " + elapsedTimeTS + ", TJ : " + elapsedTimeTJ + "\n");
+        myWriter.close();
+	}
+	else{
+        FileWriter myWriter = new FileWriter(getServletContext().getRealPath("/") + file.getName(),true);
+        myWriter.write("TS : " + elapsedTimeTS + ", TJ : " + elapsedTimeTJ + "\n");
+        myWriter.close();
+
+	}
 
     }
 

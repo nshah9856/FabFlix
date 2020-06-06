@@ -1,6 +1,7 @@
 import com.google.gson.JsonObject;
 
-import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,10 +19,6 @@ import java.sql.ResultSet;
 public class AddMovieServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  // Create a dataSource which registered in web.xml
-  @Resource(name = "jdbc/moviedb")
-  private DataSource dataSource;
-
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     response.setContentType("application/json"); // Response mime type
     response.setCharacterEncoding("UTF-8");
@@ -36,6 +33,10 @@ public class AddMovieServlet extends HttpServlet {
     PrintWriter out = response.getWriter();
 
     try {
+      Context initContext = new InitialContext();
+      Context envContext = (Context) initContext.lookup("java:/comp/env");
+      DataSource dataSource = (DataSource) envContext.lookup("master");
+
       // Get a connection from dataSource
       Connection connection = dataSource.getConnection();
 //      String query = "CALL add_movie(?, ?, ?, ?, ?)";

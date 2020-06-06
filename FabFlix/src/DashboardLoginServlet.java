@@ -1,6 +1,8 @@
 import com.google.gson.JsonObject;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 
-import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,10 +12,8 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import org.jasypt.util.password.StrongPasswordEncryptor;
 
 
 @WebServlet(name = "DashboardLoginServlet", urlPatterns = "/api/dashboard_login")
@@ -21,10 +21,6 @@ public class DashboardLoginServlet extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
-
-    // Create a dataSource which registered in web.xml
-    @Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
 
     public String getServletInfo() {
         return "Servlet connects to MySQL database and displays result of a SELECT";
@@ -53,6 +49,11 @@ public class DashboardLoginServlet extends HttpServlet {
         JsonObject responseJsonObject = new JsonObject();
 
         try {
+            // Obtain our environment naming context
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource dataSource = (DataSource) envContext.lookup("jdbc/moviedb");
+
             // Get a connection from dataSource
             Connection connection = dataSource.getConnection();
 

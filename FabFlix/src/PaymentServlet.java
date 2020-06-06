@@ -1,6 +1,7 @@
 import com.google.gson.JsonObject;
 
-import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,10 +19,6 @@ public class PaymentServlet extends HttpServlet {
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
    */
-
-  // Create a dataSource which registered in web.xml
-  @Resource(name = "jdbc/moviedb")
-  private DataSource dataSource;
 
   protected void doPost(HttpServletRequest request, //TODO: change to doPost
   HttpServletResponse response) throws ServletException, IOException {
@@ -48,6 +45,11 @@ public class PaymentServlet extends HttpServlet {
     }
 
     try {
+      // Obtain our environment naming context
+      Context initContext = new InitialContext();
+      Context envContext = (Context) initContext.lookup("java:/comp/env");
+      DataSource dataSource = (DataSource) envContext.lookup("jdbc/moviedb");
+
       // Get a connection from dataSource
       Connection connection = dataSource.getConnection();
 

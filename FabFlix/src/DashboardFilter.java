@@ -32,7 +32,9 @@ public class DashboardFilter implements Filter {
 
 //         Redirect to login page if the "user" attribute doesn't exist in session
         if (httpRequest.getSession().getAttribute("employee") == null) {
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/_dashboard_login.html");
+//            httpResponse.sendRedirect(httpRequest.getContextPath() + "/_dashboard_login.html");
+            httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + "/_dashboard_login.html"));
+
         } else {
                 chain.doFilter(request,response);
         }

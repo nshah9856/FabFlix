@@ -1,8 +1,8 @@
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,10 +22,6 @@ public class CartServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
 
-    // Create a dataSource which registered in web.xml
-    @Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession();
@@ -44,6 +40,11 @@ public class CartServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
+            // Obtain our environment naming context
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource dataSource = (DataSource) envContext.lookup("jdbc/moviedb");
+
             // Get a connection from dataSource
             Connection connection = dataSource.getConnection();
 
@@ -107,6 +108,11 @@ public class CartServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
+            // Obtain our environment naming context
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource dataSource = (DataSource) envContext.lookup("jdbc/moviedb");
+
             // Get a connection from dataSource
             Connection connection = dataSource.getConnection();
             JsonParser parser = new JsonParser();

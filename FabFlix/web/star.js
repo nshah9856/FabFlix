@@ -86,9 +86,6 @@ const handleSelectSuggestion = (suggestion) => {
     window.location.href = `movie.html?id=${suggestion["data"]["id"]}`
 }
 
-
-document.getElementById('title-search').addEventListener('submit', handleSearch)
-document.getElementById('advance-search').addEventListener('submit', handleSearch)
 $('#autocomplete').autocomplete({
     // documentation of the lookup function can be found under the "Custom lookup function" section
     lookup: (query, doneCallback) => {

@@ -1,7 +1,8 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,10 +22,6 @@ public class FetchMetaData extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
 
-    // Create a dataSource which registered in web.xml
-    @Resource(name = "jdbc/moviedb")
-    private DataSource dataSource;
-
     public String getServletInfo() {
         return "Servlet connects to MySQL database and displays result of a SELECT";
     }
@@ -36,6 +33,11 @@ public class FetchMetaData extends HttpServlet {
         JsonArray jsonArray = new JsonArray();
 
         try {
+            // Obtain our environment naming context
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource dataSource = (DataSource) envContext.lookup("jdbc/moviedb");
+
             // Get a connection from dataSource
             Connection connection = dataSource.getConnection();
 
